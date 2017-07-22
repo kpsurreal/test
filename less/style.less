@@ -1,0 +1,352 @@
+	.vue_input_default{
+		display: table-cell;
+		border-radius: 3px;
+		border:1px solid #cccccc;
+		padding-left: 4px;
+		outline: none;
+		font-size: 12px !important;
+		line-height:20px;
+		width: 114px;
+		&.focus{
+			border:1px solid black;
+		}
+		background: white;
+
+	}
+	.vue_input_select{
+		text-align: right;
+		display: table-cell;
+		border-radius: 3px;
+		border:1px solid transparent;
+		padding-left: 4px;
+		outline: none;
+		font-size: 12px !important;
+		height: 20px;
+		line-height:20px;
+		width: 114px;
+	}
+	.vue_input_default>*{
+		padding: 0;
+		margin: 0;
+		border: none;
+		outline: none;
+		float: left;
+	}
+	.vue_input_default>input{
+		width: 70px;
+		height: 20px;
+	}
+
+	.vue_input_default>span:last-child{
+		color: #cccccc;
+		float: right;
+	}
+
+	.vue-input-none{
+		text-align: right;
+		display: table-cell;
+		border-radius: 3px;
+		border:1px solid transparent;
+		padding-left: 4px;
+		outline: none;
+		font-size: 12px !important;
+		height: 20px;
+		line-height:20px;
+		width: 114px;
+	}
+
+	.vue_text_default{
+		display: table-cell;
+		border-radius: 3px;
+		padding-left: 4px;
+		outline: none;
+		font-size: 11px !important;
+		height: 20px;
+		line-height:20px;
+		text-align: left;
+		float: left;
+	}
+
+	.vue_number_default{
+		display: table-cell;
+		border-radius: 3px;
+		padding-left: 4px;
+		outline: none;
+		font-size: 11px !important;
+		height: 20px;
+		line-height:20px;
+		text-align: right;
+		float: right;
+	}
+//批量交易列表 table
+
+
+
+.new-oms-container .main-container section.create-order.fixed .body.multi .right-board{
+	padding: 0;
+}
+.new-oms-container .main-container section.create-order .right-board .inner-wrap.multi-stocks{
+	padding: 0;
+}
+
+#multi_table_batchbuy{
+	padding-top: 6px;
+}
+
+
+
+
+
+#multi_table_batch_buy .batch_list{
+
+	tbody{
+		text-align: left;
+		user-select:none;
+
+		tr:nth-child(1){
+			text-align: right;
+			background-color: #c7c7c7;
+			
+			padding-left: 6px;
+			padding-right: 6px;
+			>th{
+				color:#333333;
+			}
+
+		}
+		tr:nth-child(2){
+			
+			background: #e6e6e6;
+			>td{
+				text-align: right;
+			}
+			>td:nth-child(3){
+				text-align: left;
+			}
+		}
+		tr{
+			>th:nth-child(3){
+				div{
+					float: left;
+				}
+			}
+			>td:nth-child(3){
+				div{
+					float: left;
+				}
+			}
+
+			&.error{
+				background-color: #FFC3BE;
+			}
+			&.error.line{
+				border-top: 1px solid #2196F3;
+				border-bottom: 1px solid #2196F3;
+			}
+			.error-box{
+				width: 18px;
+				position: relative;
+				float: right;
+
+				.error-info{
+					position: absolute;
+				    border: 1px solid #979797;
+				    width: 178px;
+				    height: 89px;
+				    white-space: normal;
+				    top: 10px;
+				    right: 18px;
+				    border-radius: 4px;	
+				    background-color: white;
+				    line-height: 20px;
+				    z-index:1;
+					&:before{
+						content: "";
+						display: block;
+				    	position: absolute;
+				    	border-top: 6px solid transparent;
+				    	border-left:6px solid transparent;
+				    	border-right: 6px solid transparent;
+				    	border-bottom: 6px solid #979797;
+				    	width:0;
+				    	height: 0;
+				    	top: -12px;
+    					right: 20px;
+					}
+					&:after{
+						content: "";
+						display: block;
+				    	position: absolute;
+				    	border-top: 4px solid transparent;
+				    	border-left:4px solid transparent;
+				    	border-right: 4px solid transparent;
+				    	border-bottom: 4px solid white;
+					    width: 0;
+					    height: 0;
+					    top: -8px;
+					    right: 22px;
+    				}
+    				span{
+    					color: red !important;
+    				}
+	
+				}
+				span.dele_icon{
+					background-image: url("../../../css/img/icon-delete-gray.png");
+					width: 12px;
+					height: 12px;
+					display: none;
+				}
+
+			}
+			&:hover{
+				.error-box{
+					span.dele_icon{
+						display: block;
+					}
+				}
+			}
+		}
+
+	}
+	
+}
+
+
+
+// #multi_table_batch_buy tbody>tr{
+// 	&:error{
+// 		background-color: #FFC3BE;
+// 	}
+// 	&:error:hover{
+// 		border-top: 1px solid #2196F3;
+// 		border-bottom: 1px solid #2196F3;
+// 	}
+// }
+.error_info{
+	display: block;
+	color: black;
+	width: 20px;
+	position: relative;
+
+}
+
+.error_info span {
+ 	content: "";
+ 	display: block;
+ 	position: absolute;
+ 	left: 8px;
+ 	top: -8px;
+ 	width:14px;
+ 	height: 14px;
+ 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAAXNSR0IArs4c6QAAAUtJREFUKBVjYMABvvlYSv93dxfCIc3AhE3iv58177/v/85++/t+5////xmxqcGq8dvXvxUMDP/F//9nMPnhZhGNTSOGad/c7GT///158z/Df06QBkZGhsdcgszqjKuPf0c2AMPGf/9+tIM0cUycw8BWUsMAtFX22/v/RciaQGwUjV+drUwZ/zNEgRUxMzMwgDAI/P9f8cXLQQLCgZAoGv8z/O39D3QdsgIQG+gCHsZf35uQxeEav7lYBAGV2MIl//xmYPjzB84FMpJ+uljqwgTApv8PDWX79u7hNaBtyjAJBlZWkBNRNDMyMu7i3nPSHaQGbOP39w+zUTQBJTj6ZzGwFVfDzQExgHHq9tXNwhPEZvzf0MD09cj2N0BRQZAADDBpaDP8//Gd4f+DezAhKM14jXvPCR0WCO9/DnqQ/Lt5FSKFFlRMTAz/QBIAAFp1ddOnj7MAAAAASUVORK5CYII=);
+ }   
+
+
+.multi-stocks-section>.foot{
+	margin-top: 40px;
+}
+
+
+.multi-stocks-section>.foot>.foot-inner{
+
+	height: 60px;
+	&>.add_stock{
+		float: left;
+		width: 302px;
+		height: 28px;
+		position: relative;
+		padding-left: 20px;
+
+		div{
+			height: 0;
+			border:none;
+			float:left;
+		}
+
+		ul{
+			position: absolute;
+			bottom: 10px;
+    		left: 0px;
+    		width: 240px
+		}
+
+		button{
+			float: none;
+			width: 80px;
+			height: 28px;
+			font-size: 14px;
+			float: right;
+			border:none;
+			box-shadow: none;
+			border-radius: 4px;
+			background-color: #FFDE00;
+		}
+
+	}
+
+	&>.form_stock{
+		float: right;
+		position: relative;
+		&>button{
+			width: 80px;
+			height: 28px;
+			font-size: 14px;
+			float: right;
+			border:none;
+			box-shadow: none;
+			border-radius: 4px;
+
+		}
+		.adjustment_btn{
+			background-color: #FFDE00;
+			color: black;
+			margin-right: 41px;
+		}
+		.delal_btn_buy{
+			background-color: #E02F21;
+			color: white;
+			margin-right: 21px;
+		}
+		.delal_btn_sell{
+			background-color: #2196F3;
+			color: white;
+			margin-right: 21px;
+		}
+		&>span{
+			position: absolute;
+			display: block;
+			color: #F44336 !important;
+			font-size: 12px;
+			top: -20px;
+			right: 21px;
+
+		}
+	}
+	&>.modify_stock{
+		float: right;
+
+		label{
+			margin-right: 47px;
+			div{
+			    position: relative;
+			    top: 5px;
+			    left: 6px;
+			}
+		}
+	}
+
+}
+
+#submit_box{
+	width: 680px;
+	height: 294px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	box-shadow: 0 0 1px #000000;
+	
+}
+

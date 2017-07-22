@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="lib/vue.min.js"></script>
+    <link rel="stylesheet" href="public/css/style.min.css">
+</head>
+<body>
+
+
+</body>
+<!-- <script type="text/template" batch-deal-view>
+
+</script> -->
+<div batch-deal-view id="app"></div>
+<script type="text/javascript" src="lib/vue.js"></script>
+<script>
+var direction = "buy";
+var total_cash = 6593.00;
+var product = "xxxx";
+	function formatNumber(num,cent,isThousand) {  
+        if(num == undefined){
+            return 0
+        }
+        console.log(num,cent,isThousand);
+        num = num.toString().replace(/\$|\,/g,'');  
+  
+        // 检查传入数值为数值类型  
+        if(isNaN(num))  
+            num = "0";  
+  
+        // 获取符号(正/负数)  
+        let sign = (num == (num = Math.abs(num)));  
+  
+        num = Math.floor(num*Math.pow(10,cent)+0.50000000001);  // 把指定的小数位先转换成整数.多余的小数位四舍五入  
+        let cents = num%Math.pow(10,cent);              // 求出小数位数值  
+        num = Math.floor(num/Math.pow(10,cent)).toString();   // 求出整数位数值  
+        cents = cents.toString();               // 把小数位转换成字符串,以便求小数位长度  
+  
+        // 补足小数位到指定的位数  
+        while(cents.length<cent)  
+            cents = "0" + cents;  
+  
+        if(isThousand) {  
+          // 对整数部分进行千分位格式化.  
+          for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)  
+            num = num.substring(0,num.length-(4*i+3))+','+ num.substring(num.length-(4*i+3));  
+        }  
+  
+        if (cent > 0)  
+            return (((sign)?'':'-') + num + '.' + cents);  
+        else  
+            return (((sign)?'':'-') + num);  
+    }
+
+
+    var tableData = [
+        {
+            th:"error_info",
+            show_type:"error_icon",
+            class_name:"error_info",
+            name:" "     
+        },
+        {
+            th:"checkbox",
+            show_type:"checkbox",
+            name:"",
+            class_name:"" 
+
+        },
+        {
+            th:"stock_code",//证劵代码
+            show_type:'number',
+            name:"证券代码",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"stock_name",
+            show_type:"text",
+            name:"证券名称",
+            class_name:"vue_text_default" 
+        },
+        {
+            th:"commodity_name",
+            show_type:"text",
+            name:"产品",
+            class_name:"vue_text_default" 
+        },
+        {
+            th:"cost_price",
+            show_type:"number",
+            name:"成本价",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"total_amount",
+            show_type:"number",
+            name:"持仓数量",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"market_value",
+            show_type:"number",
+            name:"市值",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"earning_ratio",
+            show_type:"number",
+            name:"盈亏率",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"weight",
+            show_type:"number",
+            name:"当前仓位",
+            class_name:"vue_number_default"
+        },
+        {
+            th:"current_entrust",
+            show_type:"number",
+            name:"当前挂单",
+            class_name:"vue_number_default" 
+        },
+        {
+            th:"entrust_method",
+            show_type:"select",
+            name:"挂单方式",
+            option:[{
+                value:"market_price",
+                name:"市价",
+            },{
+                value:"limit_price",
+                name:"限价"
+            }],
+            class_name:"vue_input_select" 
+        },
+        {
+            th:"deal_price",
+            show_type:"input",
+            name:"卖出价格",
+            class_name:"vue_input_default" 
+        },{
+            th:"target_position",
+            show_type:"input_percentage",
+            name:"目标持仓",
+            class_name:"vue_input_default" 
+        },{
+            th:"transfer_position",
+            show_type:"input_" + direction + "_percentage",
+            name:"本次调仓",
+            class_name:"vue_input_default" 
+        },{
+            th:"transfer_commission",
+            show_type:"input_" + direction,
+            name:"本次委买",
+            class_name:"vue_input_default" 
+        }
+    ];
+        //测试数据
+    var stock_list=  [
+        {
+            "stock_id":"000682.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"000682.SZ",
+                "stock_code":"000682",
+                "stock_name":"东方电子",
+                "is_suspension":1,
+                "exchange":"SZ",
+                "last_price":5.2,
+                "prev_close_price":5.2,
+                "change":0,
+                "change_ratio":0,
+                "asset_class":0,
+                "market_status":1,
+                "market_info":"已停牌",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"000681.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"000681.SZ",
+                "stock_code":"000681",
+                "stock_name":"视觉中国",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":16.11,
+                "prev_close_price":16.11,
+                "change":0,
+                "change_ratio":0,
+                "asset_class":0,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"000683.SZ",
+            "follow":true,
+            "product_id":101322,
+            "stock_name":"远兴能源",
+            "usable_volume":"200.00",
+            "sell_frozen_volume":"0.00",
+            "frozen_volume":"0.00",
+            "given_amount":"0.000",
+            "market_value":"540.00000",
+            "cost_price":"2.76100",
+            "latest_price":"2.70000",
+            "profit_loss_amount":"-12.27000",
+            "profit_loss_rate":"-2.2090",
+            "market":"marketA",
+            "product_name":"",
+            "market_price":"2.70000",
+            "user_id":"",
+            "weight":0.5466,
+            "entrust_volume":0,
+            "stock_code":"000683",
+            "cost":"552.200",
+            "total_amount":"200.00",
+            "fee":"0.00000",
+            "earning":"-12.27000",
+            "earning_ratio":-0.02209,
+            "enable_sell_volume":"200.00",
+            "today_earning":"--",
+            "today_earning_ratio":"--",
+            "stock_info":{
+                "stock_id":"000683.SZ",
+                "stock_code":"000683",
+                "stock_name":"远兴能源",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":2.9,
+                "prev_close_price":2.85,
+                "change":0.05,
+                "change_ratio":0.01754,
+                "asset_class":0,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "today_buy_volume":0,
+            "today_sell_volume":0,
+            "weight_total_assets":"987.97000",
+            "industry":"其他",
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97
+        },{
+            "stock_id":"000001.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"000001.SZ",
+                "stock_code":"000001",
+                "stock_name":"平安银行",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":9.47,
+                "prev_close_price":9.4,
+                "change":0.07,
+                "change_ratio":0.00744,
+                "asset_class":0,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"000727.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"000727.SZ",
+                "stock_code":"000727",
+                "stock_name":"华东科技",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":2.88,
+                "prev_close_price":2.87,
+                "change":0.01,
+                "change_ratio":0.00348,
+                "asset_class":0,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"150228.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"150228.SZ",
+                "stock_code":"150228",
+                "stock_name":"银行B",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":0.789,
+                "prev_close_price":0.8,
+                "change":-0.011,
+                "change_ratio":-0.01375,
+                "asset_class":1,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"150016.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"150016.SZ",
+                "stock_code":"150016",
+                "stock_name":"合润A",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":1.05,
+                "prev_close_price":1.05,
+                "change":0,
+                "change_ratio":0,
+                "asset_class":1,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        },{
+            "stock_id":"150300.SZ",
+            "follow":true,
+            "stock_info":{
+                "stock_id":"150300.SZ",
+                "stock_code":"150300",
+                "stock_name":"银行股B",
+                "is_suspension":0,
+                "exchange":"SZ",
+                "last_price":0.598,
+                "prev_close_price":0.609,
+                "change":-0.011,
+                "change_ratio":-0.01806,
+                "asset_class":1,
+                "market_status":1,
+                "market_info":"已收盘",
+                "sec_timestamp":1499417943,
+                "industry":"其他"
+            },
+            "blackList":false,
+            "blackListMsg":"",
+            "stockPoolName":"",
+            "max_cash":62.97,
+            "market":"marketA"
+        }
+    ];
+
+
+
+
+    //委托信息 window.entrust_info  
+
+
+    var total_output = 789245687;
+
+
+
+    function filterData(arr,filters){
+        let data = [];
+
+        arr.forEach(function (v1) {
+
+
+   
+
+            if(v1 instanceof Object){
+
+                for(let key1 in v1){
+                    if(v1[key1] instanceof Object){
+                        for(let key2 in v1[key1]){
+                            v1[key2] = v1[key1][key2]
+                        }
+    
+                        delete v1[key1];
+                    }
+                }
+                v1.commodity_name =  product.name;
+                v1.deal_price = (v1['last_price'] * 1.1).toFixed(3);
+                v1.target_position = 0;
+                v1.transfer_position = 0;
+                v1.transfer_commission = 0;
+                v1.trading_unit = 100;
+            }  
+            
+
+
+            // data.push(obj);
+        })
+
+       
+        return arr;
+    }
+
+     var listData = filterData(stock_list,tableData);
+
+    // console.log(listData);
+
+
+    Vue.component('vue-cell-default',{
+        props:["val","showtype","checktype","name","index","float","class_name","header_data",'price_method'],
+        template:`
+            <th>
+                <div :class="[class_name]" v-if="my_showtype=='text'">
+                    <span>{{myVal}}</span>        
+                </div>
+
+                <div :class="[class_name]" v-if="my_showtype=='checkbox'">
+                    <input type="checkbox" @change=checked_change v-model="my_checked_type" name="" value="" >
+                </div>
+
+
+
+                <template v-if="my_showtype=='input' || my_showtype=='select' || my_showtype=='readyonly'">
+                        
+                    <template v-if="checktype">
+
+                        <div :class="[class_name]" v-if="my_showtype=='input'">
+                            <span v-show="deal_method">{{deal_method}}</span><input v-model="input_val" type="number" @change="input_change" @blur="input_blur"><span v-show="is_percentage">%</span>
+                        </div>
+
+                        <div :class="[class_name]" v-if="my_showtype=='select'">
+                                <select @change="select_change" v-model="select_val">
+                                    <option :value="item.value" v-for="(item,index) in header_data.option">{{item.name}}</option>
+                                 </select> 
+                        </div>
+
+                        <div :class="[class_name]" v-if="my_showtype=='readyonly'">
+                            <input value="市价" type="text" readyonly="readonly" style="color:gray">
+                        </div>
+                    </template>
+                    
+                    <div v-else  class="vue_input_select" style="text-align:center;" >
+                        <span>- -</span>
+                    </div>
+
+                </template>
+
+
+                <div :class="[class_name]" v-if="my_showtype=='error_icon'">
+                    <span></span>
+                </div> 
+                <div class="[class_name]" v-if="my_showtype=='number'">
+                    <span>{{myVal}}</span>
+                </div>
+            </th>
+        `,
+
+        data:function(){
+            return {
+                deal_method:false,
+                is_percentage:false,
+                my_checked_type:this.checktype,
+                select_val:this.price_method,
+                input_val:this.val,
+                my_showtype:''
+
+            }
+        },
+        watch:{
+            checktype(){
+                this.my_checked_type = this.checktype
+            },
+            val(val){
+                this.input_val = val;
+                if(this.name=="transfer_commission"){
+
+                    if(this.$root.direction == "buy"){
+
+
+                        //重新计算目标仓位和目标持仓
+                        let stock = this.$parent.stock;
+                        let transfer_position = this.input_val  *stock.deal_price / stock.weight_total_assets *100;
+
+                        let target_position = transfer_position + stock.weight*100;
+
+                        stock.transfer_position = transfer_position;
+                        stock.target_position =target_position;
+                    }
+
+                    if(this.$root.direction == "sell"){
+
+                        let stock = this.$parent.stock;
+                        let transfer_position = this.input_val  *stock.deal_price / stock.weight_total_assets *100;
+
+                        let target_position = transfer_position + stock.weight*100;
+
+                        stock.transfer_position = transfer_position;
+                        stock.target_position =target_position;
+                    }
+
+                }
+            },
+            showtype(val){
+                if(this.showtype.indexOf('text')>-1){
+                    this.my_showtype =  "text";
+                }
+
+                if(this.showtype.indexOf('input')>-1){
+                    this.my_showtype =  "input";
+                }
+
+
+                if(this.showtype.indexOf('checkbox')>-1){
+                    this.my_showtype =  "checkbox";
+                }
+
+                if(this.showtype.indexOf('select')>-1){
+                    this.my_showtype =  "select";
+                }
+
+
+                if(this.showtype.indexOf('error_icon')>-1){
+                    this.my_showtype = 'error_icon';
+                }
+                this.my_showtype = "text"
+
+            }
+
+        },
+        methods:{
+            select_change(){
+                this.$parent.$emit('select_change',this.index,this.select_val)
+            },
+            checked_change(){
+                
+                this.$parent.$emit('check_change',this.my_checked_type,this.select_val);
+            },
+            input_change(){
+
+                //底部的两个input 的val 不需要同步
+                if(this.name == "change_price_target" || this.name == "change_price_position"  ) return;
+
+                //同部父节点中的val
+                this.$parent.stock[this.name] = this.input_val;
+
+
+            },
+            input_blur(){
+                //this.$parent.$emit('input_blur',this.name,this.input_val)
+                //目标持仓
+
+                if(this.$root.direction == 'buy'){ 
+
+
+                    if(this.name == "target_position"){
+                        let target_position = this.input_val/100;
+
+                        let stock = this.$parent.stock;
+
+
+                        let current_positon = stock.weight;
+                        
+
+                        let stock_num = parseInt((target_position - current_positon) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                        stock.transfer_commission = stock_num;
+                    }
+
+                    if(this.name == "transfer_position"){
+                        let transfer_position = this.input_val/100;
+                        let stock = this.$parent.stock;
+
+                        let stock_num = parseInt(transfer_position * stock.weight_total_assets/stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                        stock.transfer_commission = stock_num;
+                    }
+                }
+
+
+                if(this.$root.direction == 'sell'){
+                    if(this.name == "target_position"){
+                        let target_position = this.input_val/100;
+
+                        let stock = this.$parent.stock;
+
+
+                        let current_positon = stock.weight;
+                        
+
+                        let stock_num = parseInt(( current_positon - target_position ) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                        stock.transfer_commission = stock_num;
+                    }
+
+                    if(this.name == "transfer_position"){
+                        let transfer_position = this.input_val/100;
+                        let stock = this.$parent.stock;
+
+                        let stock_num = parseInt(transfer_position * stock.weight_total_assets/stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                        stock.transfer_commission = stock_num;
+                    }                    
+                }
+
+
+                if(this.name == "change_price_target"){
+                    this.$emit(this.name,this.input_val)
+                }
+                if(self.name == "change_price_position"){
+                    this.$emit(this.name,this.input_val)
+                }
+            }
+
+
+        },
+        computed:{
+            myVal(){
+
+                if(this.val == '' || this.val == undefined){
+                    return '- -';
+                }else{
+                    return this.val
+                }
+            },
+
+            is_percentage(){
+                if(this.showtype.indexOf('percentage')>-1){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
+            deal_method(){
+                if(this.showtype.indexOf('buy')>-1){
+                    return '+'
+                }else if(this.showtype.indexOf('sell')>-1){
+                    return '-'
+                }else{
+                    return false
+                }
+            }
+
+        },
+        mounted() {
+
+            // console.log(this.showtype);
+
+                this.my_showtype = ( ()=>{
+                if(this.showtype.indexOf('text')>-1){
+                    return "text";
+                }
+
+                if(this.showtype.indexOf('input')>-1){
+                    return "input";
+                }
+
+
+                if(this.showtype.indexOf('checkbox')>-1){
+                    return "checkbox";
+                }
+
+                if(this.showtype.indexOf('select')>-1){
+                    return "select";
+                }
+
+
+                if(this.showtype.indexOf('error_icon')>-1){
+                    return 'error_icon';
+                }
+                return "text"
+
+            })()
+            
+        }
+
+    })
+
+
+
+    Vue.component('vue-row-header',{
+        props:["header_data","list_data",'checkall'],
+        template:`
+            <tr>
+                <template v-for="(item,index) in header_data">
+
+                        <vue-cell-default v-if="index==1" :val=item.name showtype="checkbox"  class_name="vue_text_default" :header_data=header_data :checktype="my_checkall"></vue-cell-default>
+
+                        <vue-cell-default v-else :val=item.name showtype="text"  class_name="vue_text_default" :header_data=header_data></vue-cell-default>
+
+                </template>
+                <th>&nbsp&nbsp</th>
+            </tr>
+        `,
+        data:function(){
+            return{
+               my_checkall:this.checkall
+            }
+        },
+        watch:{
+            checkall(val){
+                this.my_checkall = val;
+            }
+        },
+        methods:{
+            check_change(val){
+                this.my_checkall = val;
+                this.$parent.$emit('check_all',val);
+            }
+        },
+        mounted(){
+            this.$on('check_change',this.check_change);
+        }
+    });
+
+
+
+
+
+    Vue.component('vue-row-tr',{
+        props:["header_data","stock","checkall","transfer_position_all","target_position_all"],
+        template:`
+            <tr >
+                <template v-for="(item,index) in header_data">
+                    <vue-cell-default  :name=item.th :val="stock[item.th]" :showtype=item.show_type :class_name=item.class_name :header_data=item  :checktype="checktype"  :price_method="price_method" :index="index" :ref="index"></vue-cell-default> 
+                </template>
+                   
+
+            </tr>
+        `,
+        data:function(){
+            return {
+                profittype:'',
+                checktype:false,
+                price_method:'limit_price',
+
+            }
+        },
+        watch:{
+            checkall(val){
+                this.checktype = val;
+            },
+            target_position_all(val){
+                if(this.checktype){
+                    this.stock["target_position"] = this.val;
+                }
+            },
+            transfer_position_all(){
+                if(this.checktype){
+                    this.stock["transfer_position"] = this.val;
+                }
+            }
+        },
+        methods:{
+            check_change(val){
+                this.checktype = val;
+                if(val == false){
+                    this.$parent.checknum --
+                }else{
+                    this.$parent.checknum ++
+                }
+                
+            },
+            select_change(index,name){
+                console.log(index,name);
+                if(name == "limit_price"){
+                    this.$refs[index+1][0].my_showtype = 'input';
+                }else{
+                    this.$refs[index+1][0].my_showtype ='readyonly';
+                }
+
+            }
+
+        },
+        mounted(){
+
+            console.log(this.header_data);
+            console.log(this.stock);
+            this.$on('check_change',this.check_change);
+            this.$on('select_change',this.select_change);
+            this.$on('input_blur',this.input_blur)
+
+        }
+    })
+
+
+
+    Vue.component('vue-multi-tbody',{
+        props:["header_data","list_data","total_cash","target_position_all","transfer_position_all"],
+        watch:{
+
+        },
+        template:`
+            <tbody >
+                <vue-row-header :header_data="header_data" :list_data="list_data" :checkall="checkall" ></vue-row-header>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>汇总</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{current_position_total}}</td>
+                    <td>{{current_guadan_total}}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{target_position_total}}</td>
+                    <td>{{transfer_position_total}}</td>
+                    <td>{{transfer_commission_total}}</td>
+                    <td>&nbsp&nbsp&nbsp&nbsp<td>
+                </tr> 
+                <template v-for="(stock,index) in  list_data" >
+                    <vue-row-tr :header_data="header_data" :stock="stock"  :checkall="checktr" :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-row-tr>
+                </template>
+            </tbody>
+        `,
+        data:function(){
+            return{
+                "current_position_total" : 0,
+                "current_guadan_total": 0,
+                "target_position_total" : 0,
+                "transfer_position_total" : 0,
+                "transfer_commission_total": 0,
+                "myCheckAll" : false,
+                "checkref"  : "checkbox",
+                "my_total_cash" :this.total_cash,
+                "checkall":false,
+                "checklen":0,
+                "checknum":0,
+                "checktr":false,
+
+
+            }
+        },
+        watch:{
+            checknum(){
+                if(this.checknum == this.checklen){
+                    this.checkall = true
+                    
+                }else{
+                    this.checkall = false;
+                }
+            }
+
+        },
+        mounted(){
+            this.checklen = this.list_data.length;
+            this.$on('check_all',this.check_all);
+
+        },
+        methods:{
+            check_all(val){
+                this.checktr = val;
+                if(val == true){
+                    this.checknum = this.checklen
+                }else{
+                    this.checknum = 0 ;
+                }
+
+            }
+
+        }
+
+    })
+
+    Vue.component('vue-foot-inner',{
+        props:['transfer_position_all','target_posioton_all',"transfer_position_all"],
+        template:`
+           <div class="foot-inner">
+                <div class="add_stock">
+                    <div><input type="number"  placeholder="输入股票代码"/></div>
+                    <button>添加</button>
+                </div>
+
+                <div class="form_stock">
+                    <button class="delal_btn">批量买入</button>
+                    <button class="adjustment_btn">一键调仓</button>
+                    <span>请修改触发风控的股票</span>
+                </div>
+                <div class="modify_stock" >
+                    <label><input name="modify_method" type="radio" @change="radio_change('part')" checked/>分别设置交易量</label>
+                    <label><input name="modify_method" type="radio" @change="radio_change('equal')" />按同等目标仓位<vue-cell-default v-show="equal_show" showtype="input_percentage" val=0 index="none" name="change_price_target" @change_price_target="change_price_target" checktype="true" class_name="vue_input_default"></vue-cell-default></label>
+                    <label><input name="modify_method" type="radio" @change="radio_change('target')" />按同等调仓比例<vue-cell-default v-show="target_show" showtype="input_percentage" val=0 index="none" name="change_price_position" @change_price_position="change_price_position" checktype="true" class_name="vue_input_default"></vue-cell-default></label>
+                </div>
+            </div>
+        `,
+        data:function(){
+            return {
+                set_amount_type:"part",
+                equal_show:false,
+                target_show:false,
+                stock_code:''
+            }
+        },
+
+        methods:{
+ 
+            change_price_target(val){
+
+                this.$parent.transfer_position_all = val;
+
+
+            },
+            change_price_position(){
+
+            },
+            radio_change:function(name){
+
+                if(name =="part"){
+                    this.equal_show = false;
+                    this.target_show = false;
+                }
+
+                if(name == "target" ){
+                    this.target_show = true;
+                    this.equal_show = false;
+                }
+
+                if(name == "equal" ){
+                    this.equal_show = true;
+                    this.target_show = false;
+                }
+
+            },
+
+        }
+    })
+
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            "table_data":tableData,
+            "stock_list":stock_list,
+            "total_cash":total_cash,
+            "direction":direction,
+            "target_position_all":0,
+            "transfer_position_all":0
+        },
+        template:`
+            <div class="buy multi-stocks-section">
+                <div style="min-height:172px;">
+                    <div id="multi_table_batch_buy">
+                        <div class="section-loading loading-loading"></div>
+                        <table class="nothing-nothing buy batch_list">
+                            <vue-multi-tbody :header_data=table_data :list_data=stock_list :total_cash=total_cash :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-multi-tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="foot">
+                    <vue-foot-inner  :direction="direction" :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-foot-inner>
+                </div>
+            </div>
+        `,
+
+    })
+
+
+	
+</script>
+</html>
