@@ -497,7 +497,7 @@ var product = "xxxx";
         },
         watch:{
             checktype(){
-                this.my_checked_type = this.checktype
+                this.my_checked_type =   this.checktype
             },
             val(val){
                 this.input_val = val;
@@ -562,7 +562,7 @@ var product = "xxxx";
             },
             checked_change(){
                 
-                this.$parent.$emit('check_change',this.my_checked_type,this.select_val);
+                this.$parent.$emit('check_change',this.my_checked_type);
             },
             input_change(){
 
@@ -575,7 +575,6 @@ var product = "xxxx";
 
             },
             input_blur(){
-                //this.$parent.$emit('input_blur',this.name,this.input_val)
                 //目标持仓
 
                 if(this.$root.direction == 'buy'){ 
@@ -635,7 +634,7 @@ var product = "xxxx";
                 if(this.name == "change_price_target"){
                     this.$emit(this.name,this.input_val)
                 }
-                if(self.name == "change_price_position"){
+                if(this.name == "change_price_position"){
                     this.$emit(this.name,this.input_val)
                 }
             }
@@ -707,12 +706,12 @@ var product = "xxxx";
 
 
     Vue.component('vue-row-header',{
-        props:["header_data","list_data",'checkall'],
+        props:["header_data","list_data","checkall"],
         template:`
             <tr>
                 <template v-for="(item,index) in header_data">
 
-                        <vue-cell-default v-if="index==1" :val=item.name showtype="checkbox"  class_name="vue_text_default" :header_data=header_data :checktype="my_checkall"></vue-cell-default>
+                        <vue-cell-default v-if="index==1" :val=item.name showtype="checkbox"  class_name="vue_text_default" :header_data=header_data :checktype="checkall"></vue-cell-default>
 
                         <vue-cell-default v-else :val=item.name showtype="text"  class_name="vue_text_default" :header_data=header_data></vue-cell-default>
 
@@ -722,17 +721,17 @@ var product = "xxxx";
         `,
         data:function(){
             return{
-               my_checkall:this.checkall
+
             }
         },
         watch:{
-            checkall(val){
-                this.my_checkall = val;
-            }
+            // checkall(val){
+            //     this.my_checkall = val;
+            // }
         },
         methods:{
             check_change(val){
-                this.my_checkall = val;
+                // this.my_checkall = val;
                 this.$parent.$emit('check_all',val);
             }
         },
@@ -746,11 +745,11 @@ var product = "xxxx";
 
 
     Vue.component('vue-row-tr',{
-        props:["header_data","stock","checkall","transfer_position_all","target_position_all"],
+        props:["header_data","stock","transfer_position_all","target_position_all","checktype","index"],
         template:`
             <tr >
                 <template v-for="(item,index) in header_data">
-                    <vue-cell-default  :name=item.th :val="stock[item.th]" :showtype=item.show_type :class_name=item.class_name :header_data=item  :checktype="checktype"  :price_method="price_method" :index="index" :ref="index"></vue-cell-default> 
+                    <vue-cell-default  :name=item.th :val="stock[item.th]" :showtype=item.show_type :class_name=item.class_name :header_data=item  :checktype="checktype"  :price_method="price_method" :index=index :ref="index"></vue-cell-default> 
                 </template>
                    
 
@@ -759,15 +758,12 @@ var product = "xxxx";
         data:function(){
             return {
                 profittype:'',
-                checktype:false,
                 price_method:'limit_price',
 
             }
         },
         watch:{
-            checkall(val){
-                this.checktype = val;
-            },
+
             target_position_all(val){
                 if(this.checktype){
                     this.stock["target_position"] = this.val;
@@ -781,12 +777,7 @@ var product = "xxxx";
         },
         methods:{
             check_change(val){
-                this.checktype = val;
-                if(val == false){
-                    this.$parent.checknum --
-                }else{
-                    this.$parent.checknum ++
-                }
+                this.$parent.$emit('check_change',this.index,val);
                 
             },
             select_change(index,name){
@@ -814,7 +805,7 @@ var product = "xxxx";
 
 
     Vue.component('vue-multi-tbody',{
-        props:["header_data","list_data","total_cash","target_position_all","transfer_position_all"],
+        props:["header_data","list_data","total_cash","target_position_all","transfer_position_all",'direction'],
         watch:{
 
         },
@@ -831,8 +822,8 @@ var product = "xxxx";
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{current_position_total}}</td>
-                    <td>{{current_guadan_total}}</td>
+                    <td>{{weight_total}}</td>
+                    <td>{{current_entrust_total}}</td>
                     <td></td>
                     <td></td>
                     <td>{{target_position_total}}</td>
@@ -841,61 +832,145 @@ var product = "xxxx";
                     <td>&nbsp&nbsp&nbsp&nbsp<td>
                 </tr> 
                 <template v-for="(stock,index) in  list_data" >
-                    <vue-row-tr :header_data="header_data" :stock="stock"  :checkall="checktr" :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-row-tr>
+                    <vue-row-tr :header_data="header_data" :stock="stock" :checktype="checkArr[index]" :target_position_all="target_position_all" :transfer_position_all="transfer_position_all" :index="index"></vue-row-tr>
                 </template>
             </tbody>
         `,
         data:function(){
             return{
-                "current_position_total" : 0,
-                "current_guadan_total": 0,
+                "weight_total" : 0,
+                "current_entrust_total": 0,
                 "target_position_total" : 0,
                 "transfer_position_total" : 0,
                 "transfer_commission_total": 0,
-                "myCheckAll" : false,
                 "checkref"  : "checkbox",
                 "my_total_cash" :this.total_cash,
                 "checkall":false,
-                "checklen":0,
+                "checklen":this.list_data.length,
                 "checknum":0,
                 "checktr":false,
-
+                "checkArr":[]
 
             }
         },
         watch:{
-            checknum(){
-                if(this.checknum == this.checklen){
-                    this.checkall = true
-                    
-                }else{
-                    this.checkall = false;
-                }
+
+            list_data(){
+                this.checkArr = new Array(this.checklen);
+                this.checkArr.forEach(function(ele){
+                ele = false;
+              })
             }
 
         },
         mounted(){
-            this.checklen = this.list_data.length;
+
+            this.checkArr = new Array(this.checklen);
+            for(let i =0;i<this.checkArr.length;i++){
+                this.checkArr[i] = false;
+            }
+
+
             this.$on('check_all',this.check_all);
+            this.$on("check_change",this.check_change);
+            this.$on('change_price_position',this.change_price_position);
+            this.$on('change_price_target',this.change_price_target);
+
 
         },
         methods:{
             check_all(val){
-                this.checktr = val;
-                if(val == true){
-                    this.checknum = this.checklen
-                }else{
-                    this.checknum = 0 ;
+
+                this.checkall = val;
+                this.checkArr = new Array(this.checklen);
+                for(let i =0;i<this.checkArr.length;i++){
+                    this.checkArr[i] = val;
                 }
 
+            },
+            check_change(index,val){
+                this.checkArr = new Array(...this.checkArr);
+                this.checkArr[index] = val;
+
+                bool = true;
+
+                this.checkArr.forEach(function(ele){
+                    if(ele== false){
+                        bool =false;
+                    }
+                })
+
+                this.checkall = bool;
+            },
+            change_price_target(val){
+
+                let self = this;
+
+                this.checkArr.forEach(function(ele,index){
+                    console.log(ele);
+                    if(ele){
+                        let target_position = val/100;
+                        let stock = self.list_data[index];
+                        let current_positon = stock.weight;
+
+                        if(self.$root.direction == "buy"){
+                            let stock_num = parseInt((target_position - current_positon) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+                            stock.transfer_commission = stock_num;
+                           
+                        }
+
+                       if(self.$root.direction == "sell"){
+
+                            let stock_num = parseInt(( current_positon - target_position ) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+                            stock.transfer_commission = stock_num;
+                       
+                       }
+
+                        
+
+                    }
+                });
+
+
+
+
+            },
+            change_price_position(val){
+                let self = this;
+
+                this.checkArr.forEach(function(ele,index){
+                    console.log(ele);
+                    if(ele){
+                        let transfer_position = val/100;
+                        let stock = self.list_data[index];
+                        let current_positon = stock.weight;
+
+                        if(self.$root.direction == "buy"){
+                            let stock_num = parseInt((transfer_position) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                            stock.transfer_commission = stock_num;
+                        }
+
+                       if(self.$root.direction == "sell"){
+
+                            let stock_num = parseInt(( transfer_position ) * stock.weight_total_assets /stock.deal_price /stock.trading_unit)*stock.trading_unit;
+
+                             stock.transfer_commission = stock_num;
+                       }
+
+                       
+
+                    }
+                });
             }
+
 
         }
 
     })
 
     Vue.component('vue-foot-inner',{
-        props:['transfer_position_all','target_posioton_all',"transfer_position_all"],
+        props:["error_type","direction"],
         template:`
            <div class="foot-inner">
                 <div class="add_stock">
@@ -928,12 +1003,14 @@ var product = "xxxx";
  
             change_price_target(val){
 
-                this.$parent.transfer_position_all = val;
+                //调用tbody的对应方法 
+                this.$parent.$children[0].$emit('change_price_target',val)
 
 
             },
             change_price_position(){
-
+                //调用tbody的对应方法 
+                 this.$parent.$children[0].$emit(' change_price_position',val)
             },
             radio_change:function(name){
 
@@ -964,8 +1041,6 @@ var product = "xxxx";
             "stock_list":stock_list,
             "total_cash":total_cash,
             "direction":direction,
-            "target_position_all":0,
-            "transfer_position_all":0
         },
         template:`
             <div class="buy multi-stocks-section">
@@ -973,12 +1048,12 @@ var product = "xxxx";
                     <div id="multi_table_batch_buy">
                         <div class="section-loading loading-loading"></div>
                         <table class="nothing-nothing buy batch_list">
-                            <vue-multi-tbody :header_data=table_data :list_data=stock_list :total_cash=total_cash :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-multi-tbody>
+                            <vue-multi-tbody :header_data=table_data :list_data=stock_list :total_cash="total_cash"  :direction="direction"></vue-multi-tbody>
                         </table>
                     </div>
                 </div>
                 <div class="foot">
-                    <vue-foot-inner  :direction="direction" :target_position_all="target_position_all" :transfer_position_all="transfer_position_all"></vue-foot-inner>
+                    <vue-foot-inner  :direction="direction" ></vue-foot-inner>
                 </div>
             </div>
         `,

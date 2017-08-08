@@ -1,0 +1,29 @@
+{
+  "name": "q",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "vue": "^2.4.2",
+    "vuex": "^2.3.1"
+  },
+  "scripts": {
+    "test": "js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpsurreal/test.git"
+  },
+  "keywords": [
+    "jk13145yaya"
+  ],
+  "author": "jjk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kpsurreal/test/issues"
+  },
+  "homepage": "https://github.com/kpsurreal/test#readme"
+}
