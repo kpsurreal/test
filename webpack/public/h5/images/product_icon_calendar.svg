@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.1 (15681) - http://www.bohemiancoding.com/sketch -->
+    <title>product_icon_calendar</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="product_icon_calendar" sketch:type="MSArtboardGroup">
+            <path d="M17.7133377,24.5025341 C16.4515943,24.6558496 15.5,25.6868225 15.5,26.9006758 L15.5,35.0714487 C15.5,36.4107419 16.6361859,37.5 18.0331791,37.5 L29.9690236,37.5 C31.3642546,37.5 32.5,36.4107419 32.5,35.0714487 L32.5,26.9006758 C32.5,25.6868225 31.5479652,24.6554273 30.2443692,24.5 L17.7133377,24.5025341 Z M30,23 C29.9342955,20.1621454 27.455363,17 24.0004351,17 C20.5485532,17 18.0670099,20.1621454 18,23 M23.9992505,28 C22.8969394,28 22,28.9323994 22,30.0785709 C22,30.8459714 22.3982511,31.532429 23.0333542,31.8951153 L23.0333542,33.9975539 C23.0333542,34.5501445 23.4665834,35 23.9992505,35 C24.5324172,35 24.9666458,34.5501445 24.9666458,33.9975539 L24.9666458,31.8940775 C25.6022486,31.532429 26,30.8459714 26,30.0785709 C26,28.9323994 25.1030606,28 23.9992505,28 L23.9992505,28 L23.9992505,28 Z" id="Fill-96" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup"></path>
+            <rect id="Rectangle-278" fill="#FFDE00" sketch:type="MSShapeGroup" x="5" y="5" width="38" height="8"></rect>
+            <rect id="Rectangle-142" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup" x="5" y="5" width="38" height="39" rx="1"></rect>
+            <path d="M5.5,12.5 L42.5135117,12.5" id="Line" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup"></path>
+            <path d="M13.5,2.42857143 L13.5,7.57142857" id="Line" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup"></path>
+            <path d="M34.5,2.42857143 L34.5,7.57142857" id="Line-Copy" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

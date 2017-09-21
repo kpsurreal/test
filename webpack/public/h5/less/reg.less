@@ -1,0 +1,54 @@
+//out:../css/reg.min.css,compress:true
+@import url(reset.import.less);
+.headline.error {color:@red;}
+body{background:#fff; padding-bottom:.1px;}
+.new-main-header{position:absolute!important;}
+.global-download-footer{display:none !important;}
+
+.container {width:80%; margin:0 auto; padding:0;}
+.headline {font-size: @textSizeLargeX; color: #333; text-align: center;padding: 48px 0 0; width: 100%}
+.headline.error {color:@red;}
+
+.section{padding:0 20px;
+	&.registered{text-align:center;
+		.registered-img{display:block;margin:20px auto; width:80px; height:auto;}
+		.bounty{display:none;}
+		&.bounty{
+			.no-bounty{display:none;}
+			.bounty{display:block;}
+			.ui-btn{margin-top:50px;}
+		}
+		p{line-height:1.3;margin-bottom:15px;}
+		.ui-btn{.ui-btn(235px,40px);display:block;margin:90px auto 30px;}
+		.goto-around{color:@blue;}
+	}
+}
+
+.ui-form{margin: 40px 0;
+	.field {width: 100%;margin: 0 auto 20px; position:relative; height:@inputHeight;
+			&.error {
+				    input{border:@red solid 1px;}
+				    }
+			.forgetpassword{float: right;}
+			.checkbox label{position: relative;right: auto;line-height: 16px;
+	                         input[type=checkbox]{width:16px;height:16px;display: inline-block; vertical-align: middle;}
+			                }
+			.half {width:48%; &:last-of-type{margin-left:4%};float:left;
+				input + div.tips{right:40%;}
+			}
+			p.error_hint.fnt_red{display: block;background:@red;color:@white; line-height: 32px;margin:90px 0 -90px; padding:0 8px;}
+			input.tips{position: static;background:#fff;border:@red solid 1px;}
+			+.input-tip{font-size:@textSizeSmall;color:@textColorLight;margin:-15px 0 15px;}
+	}
+	.ui-btn {width:100%; padding:8px auto; line-height: 40px}
+	.qrcode {text-align: center; color:#999;padding:20px 0 0 0; p:last-of-type{margin-bottom:4em};}
+	.qrcode img{width:240px;height: 240px;margin: 0 0 10px;}
+	.tip-about{font-size:.9em;margin:-5px 0 10px;}
+}
+
+/* temperary  */
+#checkSuccessBlockLogin, #checkSuccessBlockRegister,#checkFailureBlock, #forgetPasswd {display:none;}
+
+//隐藏页脚
+body{margin-bottom: initial;}
+.footer{display: none;}

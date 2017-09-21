@@ -1,0 +1,58 @@
+//out: ../css/oms.login_v2.min.css, compress: true
+// Added by liuzeya for 高毅
+.google-loading(){
+    &.loading:after{content:'';display:inline-block;vertical-align:middle;margin-left:10px;background:url('../images/loading_google.gif');width:22px;height:22px;margin-top:-4px;}
+}
+
+.navbar{display:none;}
+body{background-color: #324250;}
+.login-container{width:516px;margin:auto;text-align:center;box-shadow: 0px 0px 3px #324250;
+    h1{
+        color:#fff;
+        background-color: #2B3642;
+        font-size:20px;
+        margin:60px 0 0;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        span{
+            color: #FFDD3A;
+            font-size: 36px;
+            line-height: 50px;
+        }
+    }
+    form{padding:50px 83px;box-sizing:border-box;background:#ECEEF1;text-align:initial;font-size:16px;
+        label{display:block;}
+        a{text-decoration:none;}
+        input,button{background:#DCE3EB;color:black;appearance:none;-webkit-appearance:none;border:0;font-size:16px;line-height:44px;height:44px;
+            display:block;width:100%;padding-left:15px;margin-bottom:30px;
+        }
+        button{background:#FFDE00;.google-loading();margin-top:50px;font-size: 18px;}
+    }
+    .copyright{color:#677994;font-size:13px;text-align:center;padding-top:17px;}
+}
+
+.login_label{
+    position:relative;
+    margin-bottom: 0;
+}
+.login_label>input.invalid{
+    border: 1px solid #FF1744;
+}
+.login_label .error-tip{
+    display: block;
+    position: absolute;
+    top: -25px;
+    font-size: 14px;
+    color: #FF1744;
+    // font-weight: lighter;
+}
+.login_label .error-tip.hide{
+    display: none;
+}
+
+.side-nav{
+    display: none;
+}
+.login_label .error-tip{
+    top: -20px;
+}

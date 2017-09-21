@@ -1,0 +1,121 @@
+<div class="container-title">
+  <h2 class="page-title"></h2>
+  <div class="container-title-right" id="productHeader">
+    <vue-product-display :user_info="userInfo" :group_info="groupInfo" :balance_info="balanceInfo" :org_info="org_info"></vue-product-display>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<div class="container-content">
+  <div class="container-content-menu">
+    <div id="productMenu">
+      <vue-product-menu :permission="permission" :active="active" :disabled="disabled" :goto="goto"></vue-product-menu>
+    </div>
+  </div>
+  <div class="container-content-change" id="cashInfo">
+    <form class="left common-form" style="margin-top: 54px;">
+      <div class="form-field" style="padding-left: 104px;">
+        <label style="width: 85px; display: inline-block;"><input type="radio" name="actionType" value="0" v-model="actionType">出入金</label>
+        <label style="width: 85px; display: inline-block;"><input type="radio" name="actionType" value="1" v-model="actionType">冻结解冻</label>
+      </div>
+      <div class="form-field">
+        <label class="form-left">操作<b>*</b></label>
+        <select class="input-select" style="width: 275px;" v-model="op_type">
+          <template v-if="0 == actionType">
+            <option value="1">入金</option>
+            <option value="2">出金</option>
+          </template>
+          <template v-if="1 == actionType">
+            <option value="3">冻结</option>
+            <option value="4">解冻</option>
+          </template>
+
+        </select>
+        <!-- <input type="text" name=""> -->
+      </div>
+      <div v-show="!showSpecial()" class="form-field" style="margin-bottom: 8px;">
+        <label class="form-left">金额<b>*</b></label>
+        <div style="display: inline-block;position: relative;">
+          <input maxlength="16" class="input-text" type="number" name="changeMoney" style="width: 275px;" v-model="changeMoney">
+          <span style="position: absolute;right: 0;top: 0;height: 35px;line-height: 35px;margin-right: 10px;color: RGBA(0,0,0,.5);">元</span>
+        </div>
+
+        <div class="form-error-tip hide">
+          <span>{{ freeMoneyLabel }}不足</span>
+        </div>
+      </div>
+      <div v-show="!showSpecial()" class="form-field" style="padding-left: 104px;">
+        <span>{{ freeMoneyLabel }}：</span><span>{{ numeralNumber(freeMoney) }}元</span>
+      </div>
+      <div v-show="showSpecial()" class="form-field" style="margin-bottom: 8px;">
+        <label class="form-left">保证金金额<b>*</b></label>
+        <div style="display: inline-block;position: relative;">
+          <input maxlength="16" placeholder="请输入保证金" class="input-text" type="number" name="right_amount" style="width: 275px;" v-model="right_amount">
+          <span style="position: absolute;right: 0;top: 0;height: 35px;line-height: 35px;margin-right: 10px;color: RGBA(0,0,0,.5);">元</span>
+        </div>
+
+        <div class="form-error-tip hide">
+          <span>{{ freeMoneyLabel }}不足</span>
+        </div>
+      </div>
+      <div v-show="showSpecial()" class="form-field" style="margin-bottom: 8px;">
+        <label class="form-left">借款金额<b>*</b></label>
+        <div style="display: inline-block;position: relative;">
+          <input maxlength="16" placeholder="请输入借款金额" class="input-text" type="number" name="amount" style="width: 275px;" v-model="amount">
+          <span style="position: absolute;right: 0;top: 0;height: 35px;line-height: 35px;margin-right: 10px;color: RGBA(0,0,0,.5);">元</span>
+        </div>
+
+        <div class="form-error-tip hide">
+          <span>{{ freeMoneyLabel }}不足</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-left" style="vertical-align: top;">备注</label>
+        <textarea placeholder="请输入备注（非必填）" name="remark" v-model="remark"></textarea>
+      </div>
+      <div class="form-field">
+        <a class="ui-btn ui-btn-save" v-on:click="doSave()">保存</a>
+        <a class="ui-btn ui-btn-cancel" v-on:click="urlBack()">取消</a>
+      </div>
+    </form>
+    <div class="view-grid">
+      <h3>资金变动预览</h3><a v-on:click="showHistory()">查看历史变动记录</a>
+      <div>
+        <dl class="view-grid-left">
+          <dt><span class="viewSpan-left">操作策略：</span><span class="viewSpan-right" :title="groupInfo.roboter_info + '-' + groupInfo.name">{{groupInfo.roboter_info}}-{{groupInfo.name}}</span></dt>
+          <dd><span class="viewSpan-left">资产总值</span><span class="viewSpan-right">{{ numeralNumber(productInfo.total_assets) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(productInfo.total_assets) != numeralNumber(afterTotal_assets)}]">{{ numeralNumber(afterTotal_assets) }}</span></dd>
+
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left">权益金额</span><span class="viewSpan-right">{{ numeralNumber(productInfo.right_capital) }}</span></dd>
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(productInfo.right_capital) != numeralNumber(afterRight_capital)}]">{{ numeralNumber(afterRight_capital) }}</span></dd>
+
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left">保证金金额</span><span class="viewSpan-right">{{ numeralNumber(groupInfo.assure_capital) }}</span></dd>
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(groupInfo.assure_capital) != numeralNumber(afterAssure_capital)}]">{{ numeralNumber(afterAssure_capital) }}</span></dd>
+
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left">借款金额</span><span class="viewSpan-right">{{ numeralNumber(groupInfo.loan_capital) }}</span></dd>
+          <dd v-if="org_info.theme == 3"><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(groupInfo.loan_capital) != numeralNumber(afterLoan_capital)}]">{{ numeralNumber(afterLoan_capital) }}</span></dd>
+
+          <dd><span class="viewSpan-left">资产余额</span><span class="viewSpan-right">{{ numeralNumber(productInfo.balance_amount) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(productInfo.balance_amount) != numeralNumber(afterBalance_amount)}]">{{ numeralNumber(afterBalance_amount) }}</span></dd>
+          <dd><span class="viewSpan-left">可用资金</span><span class="viewSpan-right">{{ numeralNumber(productInfo.enable_cash) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(productInfo.enable_cash) != numeralNumber(afterEnable_cash)}]">{{ numeralNumber(afterEnable_cash) }}</span></dd>
+        </dl>
+        <dl class="view-grid-right" v-if="0 == actionType">
+          <dt><span class="viewSpan-left">分配账户：</span><span class="viewSpan-right" :title="groupInfo.roboter_info">{{groupInfo.roboter_info}}</span></dt>
+          <dd><span class="viewSpan-left">资产总值</span><span class="viewSpan-right">{{ numeralNumber(baseAccountInfo.total_amount) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip">10,000.00</span></dd>
+          <dd><span class="viewSpan-left">资产余额</span><span class="viewSpan-right">{{ numeralNumber(baseAccountInfo.balance_amount) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip">10,000.00</span></dd>
+          <dd><span class="viewSpan-left">可用资金</span><span class="viewSpan-right">{{ numeralNumber(baseAccountInfo.available_amount) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip">10,000.00</span></dd>
+          <dd><span class="viewSpan-left">可分配资金</span><span class="viewSpan-right">{{ numeralNumber(baseAccountInfo.can_allocate_fund) }}</span></dd>
+          <dd><span class="viewSpan-left"></span><span class="viewSpan-right number-tip" :class="[{show: numeralNumber(baseAccountInfo.can_allocate_fund) != numeralNumber(afterCan_allocate_fund)}]">{{ numeralNumber(afterCan_allocate_fund) }}</span></dd>
+        </dl>
+        <div style="clear: both;display: block;"></div>
+      </div>
+      <div class="view-grid-tip">（可分配资金仅供参考，出入金时请仔细核对券商账户资金，以免出错）</div>
+    </div>
+    <div style="clear: both;display: block;"></div>
+  </div>
+
+
+</div>

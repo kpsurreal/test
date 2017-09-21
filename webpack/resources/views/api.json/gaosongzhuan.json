@@ -1,0 +1,13 @@
+[
+    {
+        "id": "xx",
+        "product_id": "xx",
+        "created_at": "xx:unixTimeStamp",
+        "updated_at": "xx:unixTimeStamp",
+        "stock":{
+            "code": "",
+            "name": ""
+        },
+        "position":"送股，转赠，派现 翻译不过来，算球了",
+    }
+]

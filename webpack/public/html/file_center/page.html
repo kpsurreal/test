@@ -1,0 +1,5 @@
+<!-- 文件中心页面xueke.song -->
+<div id="file_center">
+  <file-center-head  @batch_down_change_click="batchFn = $event" :batch_down_list="batch_down_list" :product_data="product_data" :product_list="product_list" @current_date_change="product_data = $event" @select_report_id="chgSelected = $event"></file-center-head>
+  <file-center-content  @batch_down_report_id="batch_down_list = $event" :product_list="product_list" :product_data="product_data"></file-center-content>
+</div>

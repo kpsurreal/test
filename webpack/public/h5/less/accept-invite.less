@@ -1,0 +1,26 @@
+//out:../css/accept-invite.min.css,compress:true
+@import url(reset.import.less);
+
+@darkPurple:#260F44;
+
+.hide{display:none !important;}
+
+body{padding-bottom:70px!important;}
+
+.freshman{
+  .state-pop,.state-share{position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;}
+  .popup-body{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto; z-index:1;width:100%;text-align:center;
+    &:before,&:after{content:'';display:inline-block;vertical-align: middle;height:100%;}
+    .tip,img{vertical-align: middle;display: inline-block;}
+    .tip{color:#FEC27C;
+      h2{font-size:24px;}
+      h1{font-size:30px;}
+      h3{font-size:@textSizeLarge;}
+    }
+  }
+  .popup-bg{background:rgba(0,0,0,.85);position:fixed;top:0;left:0;width:100%;height:100%;}
+}
+
+header.header{display:none;}
+footer.footer{display:none;}
+.popup-wrap{display:none;}

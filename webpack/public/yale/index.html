@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, height=device-height, user-scalable=false, target-densitydpi=device-dpi, initial-scale=1.0">
+    <title>Hybrid Feature Test Page</title>
+
+    <style>
+        body {
+        }
+
+        .button {
+            display: block;
+            width: 256px;
+            height: 64px;
+            margin-top: 16px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+    </style>
+
+    <script>
+        function onIntroductionButtonClick() {
+            location.href = "introduction.html";
+        }
+
+        function onCallLogFuncButtonClick() {
+            var native = _getNativeContext();
+            native.log("Hello Native!");
+        }
+
+        function onCallComputeAddResultFuncButtonClick() {
+            var native = _getNativeContext();
+            var ret = native.computeAddResult(16, 14);
+            native.log("addResult: " + ret);
+        }
+
+        function log(msg) {
+            console.error(msg);
+        }
+
+        function computeAddResult(callId, left, right) {
+            var ret = left + right;
+            var native = _getNativeContext();
+            native.onResultCallback(callId, ret);
+        }
+
+        function _getNativeContext() {
+            var context = window.common;
+            if (context == null || context === undefined) {
+                context = native;
+            }
+            return context;
+        }
+
+    </script>
+</head>
+<body>
+<input class="button" type="button" value="CallLogFunc" onclick="onCallLogFuncButtonClick()">
+<input class="button" type="button" value="CallComputeAddResult" onclick="onCallComputeAddResultFuncButtonClick()">
+<input class="button" type="button" value="说明" onclick="onIntroductionButtonClick()">
+</body>
+</html>

@@ -1,0 +1,76 @@
+#开发源代码分支
+ /develop
+
+#表结构变更
+ALTER TABLE `oms_v3`.`portfolio_fee_params` ADD COLUMN `sz_fee_rate` DECIMAL(10,6)  NOT NULL  AFTER `fee_lower_limit`;
+ALTER TABLE `oms_v3`.`portfolio_fee_params` ADD COLUMN `sz_fee_upper_limit` DECIMAL(10,5)  NOT NULL  AFTER `fee_lower_limit`;
+ALTER TABLE `oms_v3`.`portfolio_fee_params` ADD COLUMN `sz_fee_lower_limit` DECIMAL(10,5)  NOT NULL  AFTER `fee_lower_limit`;
+
+ALTER TABLE `oms_v3`.`base_deal` CHANGE `fund_id` `fund_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE `oms_v3`.`base_deal` CHANGE `asset_id` `asset_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE `oms_v3`.`base_entrust` CHANGE `entrust_id` `entrust_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+
+ALTER TABLE `oms_v3`.`base_deal` ADD COLUMN `future_flag` VARCHAR(50)  NOT NULL  DEFAULT '' AFTER `fund_id`;
+ALTER TABLE `oms_v3`.`base_deal` ADD COLUMN `stock_type` VARCHAR(100)  NOT NULL  DEFAULT '' AFTER `status_desc`;
+ALTER TABLE `oms_v3`.`base_deal` ADD COLUMN `trade_type` VARCHAR(100)  NOT NULL  DEFAULT '' AFTER `status_desc`;
+
+
+ALTER TABLE `gmf_bms`.`product_base` CHANGE `combi_id` `combi_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`product_base` CHANGE `fund_id` `fund_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`product_base` CHANGE `asset_id` `asset_id` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+
+#独立配置文件更新
+
+
+#crontab定时任务
+
+
+#版本发布初始化操作
+UPDATE `oms_v3`.`portfolio_fee_params` SET `sz_fee_rate`=`fee_rate`,`sz_fee_upper_limit`=`fee_upper_limit`,`sz_fee_lower_limit`=`fee_lower_limit` WHERE fee_type IN (1,2,5);
+UPDATE `oms_v3`.`portfolio_fee_params` SET `sz_fee_rate`=`fee_rate`,`sz_fee_upper_limit`=`fee_upper_limit`,`sz_fee_lower_limit`=`fee_lower_limit` WHERE fee_type=3 AND market=2;
+交易总监初始化
+
+INSERT INTO `gmf_bms`.`user_roles` (`org_id`, `user_id`, `role_id`, `status`, `created_at`, `updated_at`)
+VALUES
+	(1, 10000, 20, 1, now(), now()),
+	(2, 20000, 20, 1, now(), now()),
+	(3, 30000, 20, 1, now(), now()),
+	(4, 40000, 20, 1, now(), now()),
+	(5, 50000, 20, 1, now(), now()),
+	(6, 60000, 20, 1, now(), now());
+
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`)
+VALUES
+    (1, 20, 21, now(), now()),
+    (1, 20, 22, now(), now()),
+    (1, 20, 23, now(), now()),
+    (1, 20, 36, now(), now()),
+    (1, 20, 37, now(), now()),
+    (1, 20, 38, now(), now()),
+    (1, 20, 39, now(), now()),
+    (1, 20, 40, now(), now()),
+    (1, 20, 25, now(), now());
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`)
+VALUES
+    (2, 20, 21, now(), now()),
+    (2, 20, 22, now(), now()),
+    (2, 20, 23, now(), now()),
+    (2, 20, 36, now(), now()),
+    (2, 20, 37, now(), now()),
+    (2, 20, 38, now(), now()),
+    (2, 20, 39, now(), now()),
+    (2, 20, 40, now(), now()),
+    (2, 20, 25, now(), now());
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`)
+VALUES
+    (3, 20, 21, now(), now()),
+    (3, 20, 22, now(), now()),
+    (3, 20, 23, now(), now()),
+    (3, 20, 36, now(), now()),
+    (3, 20, 37, now(), now()),
+    (3, 20, 38, now(), now()),
+    (3, 20, 39, now(), now()),
+    (3, 20, 40, now(), now()),
+    (3, 20, 25, now(), now());
+
+

@@ -1,0 +1,21 @@
+//out: ../css/oms.login.min.css, compress: true
+.google-loading(){
+    &.loading:after{content:'';display:inline-block;vertical-align:middle;margin-left:10px;background:url('../images/loading_google.gif');width:22px;height:22px;margin-top:-4px;}
+}
+
+.navbar{display:none;}
+body{background:#35414F;}
+.login-container{width:400px;margin:auto;text-align:center;
+    h1{color:#fff;font-size:24px;margin:60px 0 40px;
+        span{color:#FFDD3A;}
+    }
+    form{padding:50px 30px;box-sizing:border-box;background:#ECEEF1;text-align:initial;font-size:16px;
+        label{display:block;}
+        a{text-decoration:none;}
+        input,button{background:#DCE3EB;color:black;appearance:none;-webkit-appearance:none;border:0;font-size:16px;line-height:44px;height:44px;
+            display:block;width:100%;padding-left:15px;margin-bottom:15px;
+        }
+        button{background:#FFDE00;.google-loading();margin-top:50px;}
+    }
+    .copyright{color:#677994;font-size:13px;text-align:center;padding-top:17px;}
+}

@@ -1,0 +1,96 @@
+#标准版 OMS/BMS/MMS/RMS 定时任务脚本汇总
+
+#===================== OMS section =====================
+#################### 盘中委托状态更新与回报录入等相关逻辑 ####################
+
+# TB通道获取成交信息录入数据库
+* 8-23 * * * /data/www/gmf_oms/script/broker.sh >> /data/www/gmf_oms/storage/logs/broker.log 2>&1
+# TB 成交入账
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan capital_flow:deal >> /data/www/gmf_oms/storage/logs/capital_flow_deal.log 2>&1
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan capital_flow:cancel >> /data/www/gmf_oms/storage/logs/capital_flow_cancel.log 2>&1
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan capital_flow:fail >> /data/www/gmf_oms/storage/logs/capital_flow_fail.log 2>&1
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan broker:automatic_sync >> /data/www/gmf_oms/storage/logs/broker_automatic_sync.log 2>&1
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan future:automatic_sync >> /data/www/gmf_oms/storage/logs/future_automatic_sync.log 2>&1
+
+# 自动撤单脚本
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan oms:cancel_reported >> /data/www/gmf_oms/storage/logs/oms_cancel_reported.log 2>&1
+# 存储底层数据和指令的
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan ins:automatic_accept >> /data/www/gmf_oms/storage/logs/ins_automatic_accept.log 2>&1
+
+#################### 盘后费用结算与数据盘整初始化处理 ####################
+# 盘后待成状态订单批量自动更新为撤单状态
+30,45,59 15 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:check_undone_entrust >> /data/www/gmf_oms/storage/logs/check_undone_entrust.log 2>&1
+
+# 盘后, 执行股权登记
+1,15 9 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:check_gaosongzhuan >> /data/www/gmf_oms/storage/logs/check_gaosongzhuan.log 2>&1
+
+# 当日盘后数据资金余额进行归档
+05 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:account >> /data/www/gmf_oms/storage/logs/oms_portfolio_account.log 2>&1
+# 生成当天持仓统计
+25 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:position >> /data/www/gmf_oms/storage/logs/oms_portfolio_position.log 2>&1
+
+# 结算扣费，更新用户盘后资金余额
+20,50 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:init --update_balance=1 >> /data/www/gmf_oms/storage/logs/oms_portfolio_balance.log 2>&1
+
+# 对于持仓股票成本价计算基础数据重新初始化
+30 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:cost_price >> /data/www/gmf_oms/storage/logs/oms_portfolio_cost_price.log 2>&1
+
+# 开盘前对于组合数据进行当日盈亏的比较基准数据初始化
+5 0-8 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:profit_patch  >> /data/www/gmf_oms/storage/logs/profit_patch_update.log 2>&1 &
+
+
+#################### 仅提供操盘侠平台结算使用 ############ 计划后续废弃
+# 盘后, 检查交割单中未设置 product_id 的记录,
+# 并用委托编号关联OMS中的委托记录得到的 product_id 设置
+* 16-23 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:check_delivery_unset_product >> /data/www/gmf_oms/storage/logs/check_delivery_unset_product.log 2>&1
+* 1-8 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:check_delivery_unset_product >> /data/www/gmf_oms/storage/logs/check_delivery_unset_product.log 2>&1
+# 盘后, 用人工录入的委托单生成交割单
+40 15 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:create_delivery_by_hand_entrust >> /data/www/gmf_oms/storage/logs/create_delivery_by_hand_entrust.log 2>&1
+
+# 将交割单中的所有交易费用数据汇总存入portfolio_account 中的交易费用字段中。
+03 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:fee >> /data/www/gmf_oms/storage/logs/oms_portfolio_fee.log 2>&1
+
+#################### 监控日志 ############
+# 入账异常单检测处理
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan oms_check:WaitingHandleOrder > /data/www/gmf_oms/storage/logs/oms_check_waiting_handle_order.log 2>&1
+
+# OMS V3.2 子账户与底层帐户资金核对对比
+* 8-20 * * * /data/www/gmf_oms/script/monitor_generate.sh >> /data/www/gmf_oms/storage/logs/monitor_generate.log 2>&1
+
+# OMS V3.3 同步券商数据资金，持仓脚本
+32 15 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:sync_broker > /data/www/gmf_oms/storage/logs/oms_sync_broker.log 2>&1
+# OMS V3.3 OMS盘后结算
+10 16 * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:settlement > /data/www/gmf_oms/storage/logs/oms_settlement.log 2>&1
+# OMS V3.3 OMS盘中刷新交易费用 类似入帐脚本长驻
+*/2 * * * * /usr/bin/php /data/www/gmf_oms/artisan portfolio:trade_fee_refresh >> /data/www/gmf_oms/storage/logs/trade_fee_refresh.log 2>&1
+# OMS V3.3 OMS自动下单
+10 9 * * * /usr/bin/php /data/www/gmf_oms/artisan oms:send_wait_report >> /data/www/gmf_oms/storage/logs/send_wait_report.log 2>&1
+
+#===================== RMS section =====================
+#风控总监查看批量组合风控状态
+* * * * * /data/www/gmf_rms/script/refreash_risk_home_cache.sh >> /data/www/gmf_rms/storage/logs/refreash_risk_home_cache.log
+#事后风控状态更新
+* * * * * /usr/bin/php /data/www/gmf_rms/artisan rule:status_refresh >> /data/www/gmf_rms/storage/logs/risk_status_refresh.log 2>&1
+
+
+
+#===================== MMS section =====================
+# 获取市场快照，即当日单只股票实时成交价，五档行情等信息
+* 9-16 * * * /data/www/gmf_mms/script/tonglian_quote_rt_sync.sh >> /data/www/gmf_mms/storage/logs/cron/tonglian_quote_rt_sync.log 2>&1
+
+# 获取证券列表
+0 18,20 * * * /usr/bin/php /data/www/gmf_mms/artisan market-quote:sync-security-list >> /data/www/gmf_mms/storage/logs/cron/sync-security-list.log 2>&1
+
+
+# 获取交易日列表
+30 18,20 * * 0 /usr/bin/php /data/www/gmf_mms/artisan market-quote:sync-trade-date >> /data/www/gmf_mms/storage/logs/cron/sync_trade_datelog 2>&1
+
+# 获取股票权益变动信息
+0 7-9 * * * /usr/bin/php /data/www/gmf_mms/artisan market-quote:sync-realtime-tl-equity-change >> /data/www/gmf_mms/storage/logs/cron/market-quote:sync-realtime-tl-equity-change.log 2>&1
+
+# 获取股票单日行情数据，即昨收，今开等数据
+0 16-23 * * * /data/www/gmf_mms/script/tonglian_quote_rt_sync_dayly.sh "today" >> /data/www/gmf_mms/storage/logs/cron/tonglian_quote_rt_sync_dayly.log 2>&1
+0 0-8 * * * /data/www/gmf_mms/script/tonglian_quote_rt_sync_dayly.sh "today -1 day" >> /data/www/gmf_mms/storage/logs/cron/tonglian_quote_rt_sync_dayly_check.log 2>&1
+
+# 存储股票基本信息  只需部署 Redis Master
+0 8,20 * * * /usr/bin/php /data/www/gmf_mms/artisan market-quote:set-sec-info >> /data/www/gmf_mms/storage/logs/cron/market-quote:set_sec_info.log 2>&1

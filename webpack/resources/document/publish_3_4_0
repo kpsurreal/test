@@ -1,0 +1,111 @@
+#开发源代码分支
+ /develop
+
+
+#表结构变更 
+
+
+ALTER TABLE `oms_v3`.`base_deal` ADD `fund_id` INT  NOT NULL  AFTER `deal_at`;
+ALTER TABLE `oms_v3`.`base_deal` ADD `asset_id` INT  NOT NULL  AFTER `deal_at`;
+ALTER TABLE `oms_v3`.`base_deal` ADD `is_cancel` TINYINT  NOT NULL  AFTER `deal_at`;
+ALTER TABLE `oms_v3`.`base_deal` ADD `deal_flag` TINYINT  NOT NULL  AFTER `deal_at`;
+ALTER TABLE `oms_v3`.`base_entrust` ADD `request_type` TINYINT  NOT NULL  COMMENT '请求下单OR撤单'  AFTER `entrust_at`;
+
+ALTER TABLE `gmf_bms`.`organizations` ADD `allow_asset` VARCHAR(50)  NOT NULL  DEFAULT ''  AFTER `version`;
+ALTER TABLE `gmf_bms`.`product_base` ADD `need_ins` TINYINT  NOT NULL  AFTER `need_deal`;
+
+alter table `gmf_bms`.`users` add  column `safe_status` tinyint(3)  unsigned NULL default 0 ;
+alter table `gmf_bms`.`users_info` add  column `user_type` tinyint(3)  unsigned NULL default 1 ;
+
+#独立配置文件更新
+
+
+#crontab定时任务
+# OMS V3.4 自动撤单
+* * * * * /usr/bin/php /data/gmf_oms/artisan oms:cancel_reported >> /data/www/gmf_oms/storage/logs/oms_cancel_reported.log 2>&1
+# OMS V3.4 拉取回报信息并存储
+* * * * * /usr/bin/php /data/gmf_oms/artisan ins:automatic_accept >> /data/www/gmf_oms/storage/logs/ins_automatic_accept.log 2>&1
+#版本发布初始化操作
+
+INSERT INTO `oms_v3`.`securities_status` (`securities_id`, `status_desc`, `oms_status`, `deal_flag`, `is_cancel`, `created_at`, `updated_at`)
+VALUES
+    ('jz', '0', 0, 1, 0, '2016-12-29 02:35:22', '0000-00-00 00:00:00'),
+    ('jz', '1', 0, 1, 1, '2016-12-29 02:35:26', '0000-00-00 00:00:00'),
+    ('jz', '2', 0, 2, 0, '2016-12-29 02:35:27', '0000-00-00 00:00:00'),
+    ('jz', 'R', 0, 2, 1, '2016-12-29 02:35:27', '0000-00-00 00:00:00'),
+	('jiuz', '废单', 0, 2, 0, '2016-11-03 05:25:37', '2016-11-03 06:30:02'),
+	('jiuz', '部撤', 0, 1, 1, '2016-11-03 06:53:38', '2016-11-03 06:30:02'),
+	('jiuz', '已撤', 0, 1, 1, '2016-11-03 06:53:14', '2016-11-03 06:30:02'),
+	('jiuz', '已成', 0, 1, 0, '2016-11-03 06:30:02', '2016-11-03 06:30:02'),
+	('jiuz', '成交', 0, 1, 0, '2016-11-03 06:30:02', '2016-11-03 06:30:02');
+
+
+UPDATE `oms_v3`.`permissions` SET `name` = '新建策略' WHERE `id` = '27';
+UPDATE `oms_v3`.`permissions` SET `name` = '投资建议提交' WHERE `id` = '20';
+UPDATE `oms_v3`.`permissions` SET `name` = '投资建议分配' WHERE `id` = '21';
+UPDATE `oms_v3`.`permissions` SET `name` = '投资建议执行' WHERE `id` = '22';
+
+
+INSERT INTO `oms_v3`.`role_permissions` ( `org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`)  VALUES
+(1, 1, 20, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 21, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 22, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 23, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 24, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 26, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 27, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 28, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 29, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 30, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 31, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 32, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 33, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 34, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 35, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 36, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 37, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 38, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 39, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 40, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(1, 1, 41, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+
+-- release环境特有的机构
+INSERT INTO `oms_v3`.`role_permissions` ( `org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`)  VALUES
+(2, 1, 20, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 21, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 22, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 23, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 24, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 25, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 26, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 27, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 28, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 29, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 30, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 31, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 32, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 33, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 34, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 36, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 37, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 38, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 39, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 40, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 1, 41, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+
+INSERT INTO `oms_v3`.`func_permission`(`sys`,`func`,`permission_id`,`status`,`created_at`) VALUES("bms","User\UserController@cancel_user",34,1,now());
+INSERT INTO `oms_v3`.`func_permission`(`sys`,`func`,`permission_id`,`status`,`created_at`) VALUES("bms","User\UserController@modify_password",33,1,now());
+INSERT INTO `oms_v3`.`func_permission`(`sys`,`func`,`permission_id`,`status`,`created_at`) values("bms","User\UserController@register",32,1,now());
+INSERT INTO `oms_v3`.`func_permission`(`sys`,`func`,`permission_id`,`status`,`created_at`) VALUES("bms","User\UserController@modify",32,1,now());
+update `gmf_bms`.`users_info` set `user_type` = 3 where `user_id` in(19100,19101,19102,29100,29101,29102);
+UPDATE `gmf_bms`.`organizations` SET `allow_asset` = 'E';
+
+-- 委托表加入委托成本价，用于冻结解冻  buty
+ALTER TABLE `oms_v3`.`portfolio_settlement` ADD `other_fee1` DECIMAL( 18, 5 ) NOT NULL COMMENT '其他费用' AFTER `today_fund_out`;
+ALTER TABLE `oms_v3`.`workflow_entrust` ADD `entrust_cost_price` DECIMAL( 9, 5 ) NOT NULL COMMENT '委托成本价' AFTER `entrust_price`;
+ALTER TABLE `oms_v3`.`portfolio_template` ADD `org_id` INT(11) NOT NULL COMMENT '机构ID' AFTER `tpl_type`;
+
+-- 被充 SQL
+update organizations set theme=1; //修改是否显示子帐户信息
+update oms_v3.role_permissions set org_id=0 where permission_id=35; //去除指令查询权限
+update role_permissions set org_id=1, permission_id=25 where id=35(待确认); //设置管理员高级任务管理权限

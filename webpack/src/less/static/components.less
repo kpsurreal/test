@@ -1,0 +1,202 @@
+//  公共样式补充
+.clearfix:after,.clearfix:before {
+    content: "";
+    display: table
+}
+.clearfix:after {
+    clear: both
+}
+.clearfix {
+    *zoom:1
+}
+.fr{
+    float: right;
+}
+.fl{
+    float: left;
+}
+.util__cp {
+    cursor: pointer;
+}
+.bg(@url,@w,@h){
+    display: inline-block;
+    width: @w;
+    height: @h;
+    background-size: contain;
+    background-image: url(@url);
+}
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+    color: hsla(0,0%,60%,.8);
+    font-size: 12px;
+}
+input:-moz-placeholder, textarea:-moz-placeholder {
+    color: hsla(0,0%,60%,.8);
+    font-size: 12px;
+}
+input::-moz-placeholder, textarea::-moz-placeholder {
+    color: hsla(0,0%,60%,.8);
+    font-size: 12px;
+}
+input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+    color: hsla(0,0%,60%,.8);
+    font-size: 12px;
+}
+/* vue-modify-number 组件*/
+.modify-remark__content__icon{
+    .bg('../../../images/oms_manager/icon-edit.png',11px,10px);
+    cursor: pointer;
+}
+.modify-number{
+  position: relative;  
+  .modify-number_content{
+    .modify-number_content_label{
+        margin-bottom: 2px;
+        font-size: 12px;
+        line-height: 16px;
+        color: hsla(0,0%,60%,.8);
+    }  
+  }
+  .modify-number_showbox{
+    position: absolute;
+    width: 285px;
+    height: 50px;
+    background: #fff;
+    border: 1px solid rgba(119,151,178,0.3);
+    box-shadow: 1px 1px 2px rgba(119,151,178,0.2);
+    border-radius: 4px;
+    position: absolute;
+    right: -18px;
+    top: 42px;
+    z-index: 20;
+    text-align: left;
+    &:before{
+        content: "";
+        display: block;
+        width: 10px;
+        height: 10px;
+        bottom: 10px;
+        position: absolute;
+        right: 34px;
+        top: -5px;
+        border: 1px solid rgba(119,151,178,0.3);
+        border-left: 0;
+        border-bottom: 0;
+        background-color: #fff;
+        transform: rotate(-45deg);
+    }
+    a {display: inline-block;cursor: pointer;font-size: 14px;margin-left: 10px;}
+    .modify-number_input{
+        width: 183px;
+        height: 26px;
+        border: 1px solid rgba(153,153,153,0.3);
+        margin-top: 12px;
+        margin-left: 10px;
+    }
+    .modify-number_mockplaceholder{
+        position: absolute;
+        left: 13px;
+        top: 0px;
+        color: hsla(0,0%,60%,.8)
+    }
+    .modify-number_save{
+        color:#4a90e2;
+        &:hover{
+            color:#000;
+        }
+    }
+    .modify-number_cancel{
+        color: hsla(0,0%,60%,.8);
+    }
+  }
+}
+.modify-text{
+  position: relative;  
+  .modify-number_content{
+    .modify-number_content_label{
+        margin-bottom: 2px;
+        font-size: 12px;
+        line-height: 16px;
+        color: hsla(0,0%,60%,.8);
+    }  
+  }
+  .modify-number_showbox{
+    position: absolute;
+    width: 285px;
+    height: 50px;
+    background: #fff;
+    border: 1px solid rgba(119,151,178,0.3);
+    box-shadow: 1px 1px 2px rgba(119,151,178,0.2);
+    border-radius: 4px;
+    position: absolute;
+    z-index: 20;
+    text-align: left;
+    &:before{
+        content: "";
+        display: block;
+        width: 10px;
+        height: 10px;
+        bottom: 10px;
+        position: absolute;
+        left: 34px;
+        top: -5px;
+        border: 1px solid rgba(119,151,178,0.3);
+        border-left: 0;
+        border-bottom: 0;
+        background-color: #fff;
+        transform: rotate(-45deg);
+    }
+    a {display: inline-block;cursor: pointer;font-size: 14px;margin-left: 10px;}
+    .modify-number_input{
+        width: 183px;
+        height: 26px;
+        border: 1px solid rgba(153,153,153,0.3);
+        margin-top: 12px;
+        margin-left: 10px;
+    }
+    .modify-number_mockplaceholder{
+        position: absolute;
+        left: 13px;
+        top: 0px;
+        color: hsla(0,0%,60%,.8)
+    }
+    .modify-number_save{
+        color:#4a90e2;
+        &:hover{
+            color:#000;
+        }
+    }
+    .modify-number_cancel{
+        color: hsla(0,0%,60%,.8);
+    }
+  }
+}
+
+
+.modify-number_showbox{
+  line-height:50px;
+  .selectize-control{
+    
+    &.selectize-control{
+      display: inline-block;
+    }
+    .selectize-input{
+        width: 183px;
+        height: 26px;
+        border: 1px solid hsla(0,0%,60%,.3);
+        position: relative;
+        top:8px;
+        left: 12px;
+        margin-right: 12px;
+        padding: 0 !important;
+        div{
+            background-color: transparent;
+        }
+    }
+    .selectize-dropdown{
+        .selectize-dropdown-content{
+            position: relative;
+            top: 8px;
+        }
+    }
+  }
+}

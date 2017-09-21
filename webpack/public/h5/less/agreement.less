@@ -1,0 +1,81 @@
+// out: ../css/agreement.min.css, compress:true
+@import url(reset.import.less);
+body {
+    margin-bottom: 0;
+}
+.body .container .contract {
+    padding-top: 40px;
+    margin     : 0 auto;
+    line-height: 2;
+    width      : 90%;
+}
+.body>.container{
+    padding: 0 0 10px 0;//覆盖了之前定义的padding，不要省略那些0
+    border-top: 3px solid #FFDE00;
+    margin: 10px 1em;
+    background-color: #fff;
+}
+.footer{
+    border-top: 1px solid #e5e5e5;
+}
+section {
+    margin-bottom: 2em;
+}
+u{
+    padding: 0 5px;
+}
+h1 {
+    position: relative;
+    text-align   : center;
+    // font-size    : @textSizeLargeXX;
+    font-size: 16px;
+    line-height: 1.6em;
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    font-weight  : bold;
+    &:before{content:'';display:block;position:absolute;bottom:0;left:0;height:1px;width:100%;background:#ccc;}
+    &:after{
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: -6px;
+        margin: auto;
+        left: 0;
+        right: 0;
+        height: 14px;
+        width: 22px;
+        z-index: 1;
+        background-color: #fff;
+        background-image: url('img/agreement_logo.png');
+        background-size: auto 14px;
+    }
+}
+p {
+    margin-bottom: 1.5em;
+    line-height: 1.6em;
+    em {
+        text-decoration: underline;
+        font-style     : normal;
+    }
+}
+.contract{
+    &>ul{
+        &>li{
+            margin-bottom: 2em;
+            &>ul{
+                &>li{
+                    line-height: 1.6em;
+                }
+            }
+        }
+    }
+}
+@media print {
+    header,
+    footer {
+        display: none;
+    }
+    .body .container .contract {
+        width: 80%;
+    }
+}

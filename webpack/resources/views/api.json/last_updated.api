@@ -1,0 +1,16 @@
+// // 分单员界面: http://192.168.0.21:35085/oms/helper/last_updated?group_id=1
+//     "data": {
+//         "wait_alloc": 1463623766,
+//         "wait_done": 1463624607,
+//         "done": 1463624607
+//     }
+// // 下单员界面: http://192.168.0.21:35085/oms/helper/last_updated?group_id=2
+//     "data": {
+//         "wait": 1463623055,
+//         "done": 1463623055
+//     }
+// // 策略界面: http://192.168.0.21:35085/oms/helper/last_updated?group_id=3&product_id=2
+//     "data": {
+//         "position_update": 1463577825,
+//         "entrust_update": 1463624607
+//     }

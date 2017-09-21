@@ -1,0 +1,30 @@
+// out: ../css/agreement.min.css, compress:true
+@import url(reset.import.less);
+
+.body .container .contract{padding-top: 40px;margin: 0 auto;line-height: 2; width: 60%;}
+section{margin-bottom: 2em;}
+h1{text-align: center;font-size: @textSizeLargeXX;margin-bottom: 2em;font-weight: bold;}
+p{margin-bottom: 1em;
+	em{text-decoration: underline;font-style: normal;}
+}
+u{
+    padding: 0 5px;
+}
+.contract{
+    &>ul{
+        &>li{
+            margin-left: 2em;
+            margin-bottom: 2em;
+            &>ul{
+                &>li{
+                    line-height: 1.6em;
+                }
+            }
+        }
+    }
+}
+
+@media print {
+	header,footer{display: none;}
+    .body .container .contract{width: 80%;}
+}

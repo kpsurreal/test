@@ -1,0 +1,924 @@
+#开发源代码分支
+ /develop
+
+-----------------------------------------------------------------------
+
+    提示 : 该文件后面的  版本发布初始化操作  需根据需求执行
+
+-----------------------------------------------------------------------
+
+--期货用户配置表
+
+##################################################################################################################
+
+CREATE TABLE `oms_v3`.`futures_ctp_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `base_id` int(11) NOT NULL COMMENT 'product_base id',
+  `title` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '账号名称',
+  `ctp_broker` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT 'CTP经纪公司代码',
+  `ctp_user` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT 'CTP用户代码',
+  `ctp_password` varchar(300) CHARACTER SET utf8 NOT NULL COMMENT 'CTP用户密码',
+  `ctp_investor` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT 'CTP投资者ID',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='期货CTP账号';
+
+ALTER TABLE `gmf_bms`.`product_base` ADD `channel` TINYINT(4)  NOT NULL  COMMENT '账户类型(通达信 OR 金证 OR 恒生之类)';
+
+##################################################################################################################
+
+#新增DB实例  --evan
+//TONGLIAN
+putenv("DB_DATABASE_TONGLIAN=tonglian");
+putenv("DB_USERNAME_TONGLIAN=app");
+putenv("DB_PASSWORD_TONGLIAN=appdata123!@#");
+
+#新增Redis实例  --evan
+//期货网关
+putenv("RDCFG_FUTURE_HOST=172.16.0.38");
+putenv("RDCFG_FUTURE_PORT=6379");
+
+
+#表结构变更
+ALTER TABLE `gmf_bms`.`product_base` ADD `ctp_id` TINYINT(4)  NOT NULL;
+ALTER TABLE `gmf_bms`.`product_base` ADD `stock_type` TINYINT(4)  NOT NULL  COMMENT '类型 1 股票 2 期货';
+ALTER TABLE `gmf_bms`.`product_base` ADD `market` TINYINT(4)  NOT NULL  COMMENT '市场 0 A股 1 港股';
+ALTER TABLE `gmf_bms`.`product_base` ADD `group_id` INT(11)  NOT NULL  COMMENT '产品组ID';
+ALTER TABLE `gmf_bms`.`product_oms` ADD `margin_trading` TINYINT(4)  NOT NULL  COMMENT '是否融资融券';
+ALTER TABLE `oms_v3`.`portfolio_settlement` ADD `right_capital` DECIMAL(18,5)  NOT NULL  COMMENT '权益金额'  AFTER `other_fee`;
+ALTER TABLE `oms_v3`.`portfolio_settlement` ADD `loan_capital` DECIMAL(18,5)  NOT NULL  COMMENT '借款金额'  AFTER `other_fee`;
+ALTER TABLE `oms_v3`.`base_deal` ADD `currency` VARCHAR(50)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT ''  COMMENT '币种'  AFTER `deal_value_net`;
+
+
+--BMS数据库新增
+CREATE TABLE `gmf_bms`.`product_group` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `org_id` int(11) NOT NULL,
+  `operator_uid` int(11) NOT NULL,
+  `volume` decimal(21,8) NOT NULL,
+  `state` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `i_org` (`org_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--OMS数据库新增
+CREATE TABLE `oms_v3`.`otc_cash` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `amount` decimal(18,5) NOT NULL COMMENT '委托价格',
+  `state` tinyint(4) NOT NULL,
+  `remark` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `oms_v3`.`otc_cash_swap` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `balance_amount` decimal(18,5) NOT NULL COMMENT '资金额',
+  `market_value` decimal(18,5) NOT NULL,
+  `total_assets` decimal(18,5) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `oms_v3`.`otc_monetary_fund` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `stock_id` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `market_value` decimal(16,3) NOT NULL,
+  `profit_rate` decimal(7,4) NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `oms_v3`.`otc_private_placement` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `stock_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_price` decimal(10,4) NOT NULL,
+  `volume` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `unlock_date` date NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `oms_v3`.`otc_stock_swap` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `guest_id` tinyint(4) NOT NULL,
+  `list_number` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `hold_volume` int(11) NOT NULL,
+  `position_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `valuation_date` int(11) NOT NULL,
+  `security_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `security_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `currency` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `begin_price` decimal(16,3) NOT NULL,
+  `current_price` decimal(16,3) NOT NULL,
+  `rise_fall_rate` decimal(7,4) NOT NULL,
+  `total_cost` decimal(16,3) NOT NULL,
+  `accumulate_profit` decimal(16,3) NOT NULL,
+  `total_profit` decimal(16,3) NOT NULL,
+  `market_value` decimal(16,3) NOT NULL,
+  `exchange_rate` decimal(8,6) NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--MMS数据库
+
+ALTER TABLE `market_quote`.`security_list` ADD `amac_index` VARCHAR(10)  NOT NULL;
+ALTER TABLE `market_quote`.`security_list` ADD `amac_name` VARCHAR(50)  NOT NULL  AFTER `amac_index`;
+ALTER TABLE `market_quote`.`security_list` ADD `amac_date` DATE  NOT NULL  AFTER `amac_name`;
+
+CREATE TABLE `market_quote`.`stock_suspended` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `stock_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `date` int(11) NOT NULL,
+  `tips_desc` varchar(300) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--buty 停牌股票估值
+CREATE TABLE `oms_v3`.`suspension_valuation` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `group_id` int(11) NOT NULL,
+ `type` enum('group','base') COLLATE utf8_unicode_ci NOT NULL,
+ `stock_id` char(10) COLLATE utf8_unicode_ci NOT NULL,
+ `discount_rate` decimal(13,5) NOT NULL COMMENT '[弃用]估值比率',
+ `adjust_date` date NOT NULL COMMENT '估值日期',
+ `is_adjust` int(11) NOT NULL COMMENT '0:未估值 1:已估值',
+ `amac_index` varchar(10) COLLATE utf8_unicode_ci NOT NULL COMMENT '对比行业标的代码',
+ `amac_last_price` decimal(13,5) NOT NULL COMMENT '对比行业标的指数',
+ `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ PRIMARY KEY (`id`),
+ KEY `group_id` (`group_id`,`stock_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--buty 历史资产分析数据
+CREATE TABLE `oms_v3`.`history_asset_report` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `stats_day` char(10) COLLATE utf8_unicode_ci NOT NULL COMMENT '统计日期',
+ `hst_id` int(11) NOT NULL,
+ `hst_type` enum('group','base') COLLATE utf8_unicode_ci NOT NULL,
+ `data_cont` text COLLATE utf8_unicode_ci NOT NULL COMMENT '数据内容',
+ `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ PRIMARY KEY (`id`),
+ KEY `stats_day` (`stats_day`,`hst_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+-----------------------------------------------------------------------------------
+EVAN:  创建新数据库 oms_sync ，导入如下表结构
+-----------------------------------------------------------------------------------
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.6.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 192.168.0.22
+-- Generation Time: 2017-05-08 06:18:57
+-- 服务器版本： 5.5.43-0ubuntu0.14.04.1-log
+-- PHP Version: 5.6.25
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `oms_sync`
+--
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_account`
+--
+
+CREATE DATABASE `oms_sync` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE `oms_sync`.`futures_account` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `Available` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '可用资金',
+  `Balance` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '权益',
+  `CloseProfit` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '平仓盈亏',
+  `Commission` decimal(18,5) NOT NULL COMMENT '手续费',
+  `CurrMargin` decimal(18,5) NOT NULL COMMENT '当前保证金总额',
+  `ExchangeMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '保证金（交易所）',
+  `PositionProfit` decimal(18,5) NOT NULL COMMENT '持仓盈亏',
+  `PreBalance` decimal(18,5) NOT NULL COMMENT '上次结算准备金',
+  `PreDeposit` decimal(18,5) NOT NULL COMMENT '上次存款额',
+  `PreMargin` decimal(18,5) NOT NULL COMMENT '上次占用的保证金',
+  `WithdrawQuota` decimal(18,5) NOT NULL COMMENT '可取资金',
+  `FrozenMargin` decimal(18,5) NOT NULL COMMENT '冻结的保证金',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `instrument_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '总合约价值'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_deal`
+--
+
+CREATE TABLE `oms_sync`.`futures_deal` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `product_id` int(11) DEFAULT NULL COMMENT '产品ID',
+  `order_id` varchar(100) NOT NULL DEFAULT '' COMMENT '委托编号',
+  `deal_id` varchar(100) NOT NULL DEFAULT '' COMMENT '成交编号',
+  `InstrumentID` varchar(100) NOT NULL COMMENT '合约代码',
+  `InstrumentName` varchar(64) DEFAULT NULL COMMENT '合约名称',
+  `Price` decimal(15,4) NOT NULL COMMENT '成交价格',
+  `Volume` int(11) NOT NULL COMMENT '成交数量',
+  `Direction` tinyint(4) DEFAULT NULL COMMENT '买卖方向',
+  `OffsetFlag` tinyint(4) DEFAULT NULL COMMENT '期货开平标志：0=开仓，1=平仓，2=强平，3=平今，4=平昨',
+  `HedgeFlag` tinyint(4) DEFAULT NULL COMMENT '期货投保标志：1=投机，2=套利，3=套保',
+  `ExchangeID` varchar(32) DEFAULT NULL COMMENT '交易所',
+  `ExchangeInstID` varchar(64) DEFAULT NULL COMMENT '交易所合约代码',
+  `OrderLocalID` varchar(64) DEFAULT NULL COMMENT '本地报单编号',
+  `OrderRef` varchar(64) DEFAULT NULL COMMENT '报单引用',
+  `OrderSysID` varchar(64) DEFAULT NULL COMMENT '报单编号',
+  `TradeDate` varchar(12) NOT NULL COMMENT '成交日期',
+  `TradeTime` varchar(8) NOT NULL COMMENT '成交时间',
+  `deal_flag` int(11) NOT NULL COMMENT '成交摘要',
+  `is_cancel` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `dealed_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT ' 成交时间',
+  `contain` text NOT NULL,
+  `is_handle` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_entrust`
+--
+
+CREATE TABLE `oms_sync`.`futures_entrust` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) NOT NULL COMMENT '创建人 uid',
+  `order_id` varchar(32) NOT NULL DEFAULT '' COMMENT '订单 id, 与 stock order 中对应',
+  `product_id` int(11) NOT NULL COMMENT '订单所属组合 id, 冗余数据, 方便查询',
+  `InstrumentID` varchar(64) NOT NULL COMMENT '合约代码',
+  `InstrumentName` varchar(100) DEFAULT NULL COMMENT '合约名称',
+  `LimitPrice` decimal(12,3) NOT NULL COMMENT '委托价格',
+  `StopPrice` decimal(12,3) NOT NULL COMMENT '止损价',
+  `MinVolume` int(11) DEFAULT NULL COMMENT '最小成交量',
+  `Direction` tinyint(4) DEFAULT NULL COMMENT '买卖方向',
+  `ExchangeID` varchar(32) DEFAULT NULL COMMENT '交易所',
+  `ExchangeInstID` varchar(64) DEFAULT NULL COMMENT '交易所合约代码',
+  `ForceCloseReason` tinyint(4) DEFAULT NULL COMMENT '强平原因',
+  `InsertDate` varchar(12) NOT NULL COMMENT '报单日期',
+  `InsertTime` varchar(8) NOT NULL COMMENT '委托时间',
+  `OrderLocalID` varchar(32) DEFAULT NULL COMMENT '本地报单编号',
+  `OrderPriceType` tinyint(4) DEFAULT NULL COMMENT '报单价格条件',
+  `OrderRef` varchar(32) DEFAULT NULL COMMENT '报单引用',
+  `OrderStatus` tinyint(4) DEFAULT NULL COMMENT '报单状态',
+  `OrderSubmitStatus` tinyint(4) DEFAULT NULL COMMENT '报单提交状态',
+  `OrderSysID` varchar(32) DEFAULT NULL COMMENT '报单编号',
+  `OrderType` tinyint(4) DEFAULT NULL COMMENT '报单类型',
+  `StatusMsg` varchar(64) DEFAULT NULL COMMENT '状态信息',
+  `CombOffsetFlag` tinyint(4) DEFAULT NULL COMMENT '期货开平标志：0=开仓，1=平仓，2=强平，3=平今，4=平昨',
+  `CombHedgeFlag` tinyint(4) DEFAULT NULL COMMENT '期货投保标志：1=投机，2=套利，3=套保',
+  `ContingentCondition` tinyint(4) DEFAULT NULL COMMENT '触发条件',
+  `TimeCondition` tinyint(4) DEFAULT NULL COMMENT '有效期类型',
+  `UserForceClose` tinyint(4) DEFAULT NULL COMMENT '用户强平标志',
+  `VolumeCondition` int(11) DEFAULT '0' COMMENT '成交量类型',
+  `VolumeTotal` int(11) DEFAULT '0' COMMENT '剩余数量',
+  `VolumeTotalOriginal` int(11) DEFAULT '0' COMMENT '报单数量',
+  `VolumeTraded` int(11) DEFAULT '0' COMMENT '今成交数量',
+  `ZCETotalTradedVolume` int(11) DEFAULT '0' COMMENT '郑商所成交数量',
+  `executor_uid` int(11) NOT NULL COMMENT '执行员 id',
+  `status` int(11) NOT NULL COMMENT '执行员 执行状态',
+  `msg` varchar(2000) NOT NULL DEFAULT '' COMMENT '拒绝 / 删除原因',
+  `is_open` int(11) NOT NULL DEFAULT '0',
+  `alloced_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `batch_no` varchar(40) NOT NULL COMMENT '所属批量订单号',
+  `last_dispatch_time` int(11) NOT NULL DEFAULT '0' COMMENT '最近一次分发时间',
+  `repeat_cancel_times` int(11) NOT NULL DEFAULT '0' COMMENT '重复撤单次数',
+  `ins_status` int(11) NOT NULL COMMENT '指令状态',
+  `entrust_status` int(11) NOT NULL COMMENT '委托状态',
+  `deal_status` int(11) NOT NULL COMMENT '成交状态',
+  `cancel_volume` int(11) NOT NULL COMMENT '撤单数量',
+  `is_handle` int(11) NOT NULL COMMENT '是否已处理 0:未处理 1:已处理',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_position`
+--
+
+CREATE TABLE `oms_sync`.`futures_position` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `InstrumentID` varchar(12) NOT NULL COMMENT '合约代码',
+  `InstrumentName` varchar(64) DEFAULT NULL COMMENT '合约名称',
+  `Commission` decimal(16,3) NOT NULL COMMENT '手续费',
+  `ExchangeMargin` decimal(18,2) NOT NULL COMMENT '交易所保证金',
+  `HedgeFlag` tinyint(4) NOT NULL COMMENT '投机套保标志',
+  `MarginRateByMoney` decimal(8,5) NOT NULL COMMENT '保证金率',
+  `PosiDirection` tinyint(4) NOT NULL COMMENT '持仓多空方向：2=买多，3=卖空',
+  `Position` decimal(18,0) NOT NULL COMMENT '当前持仓数量',
+  `PositionCost` decimal(18,2) NOT NULL COMMENT '持仓成本',
+  `PositionDate` varchar(12) DEFAULT NULL COMMENT '持仓日期',
+  `PositionProfit` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '持仓盈亏 （浮动盈亏）',
+  `PreMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '上次占用的保证金',
+  `PreSettlementPrice` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '上次结算价 （持仓均价）',
+  `SettlementPrice` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '本次结算价 （最新价）',
+  `TodayPosition` decimal(18,5) NOT NULL COMMENT '今日持仓',
+  `UseMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '占用的保证金',
+  `YdPosition` decimal(18,5) NOT NULL COMMENT '上日持仓',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `instrument_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '合约价值'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_stats_account`
+--
+
+CREATE TABLE `oms_sync`.`futures_stats_account` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `stats_day` date NOT NULL COMMENT '日期',
+  `Available` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '可用资金',
+  `Balance` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '权益',
+  `CloseProfit` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '平仓盈亏',
+  `Commission` decimal(18,5) NOT NULL COMMENT '手续费',
+  `CurrMargin` decimal(18,5) NOT NULL COMMENT '当前保证金总额',
+  `ExchangeMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '保证金（交易所）',
+  `PositionProfit` decimal(18,5) NOT NULL COMMENT '持仓盈亏',
+  `PreBalance` decimal(18,5) NOT NULL COMMENT '上次结算准备金',
+  `PreDeposit` decimal(18,5) NOT NULL COMMENT '上次存款额',
+  `PreMargin` decimal(18,5) NOT NULL COMMENT '上次占用的保证金',
+  `WithdrawQuota` decimal(18,5) NOT NULL COMMENT '可取资金',
+  `FrozenMargin` decimal(18,5) NOT NULL COMMENT '冻结的保证金',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `instrument_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '总合约价值'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `futures_stats_position`
+--
+
+CREATE TABLE `oms_sync`.`futures_stats_position` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `stats_day` char(10) NOT NULL,
+  `InstrumentID` varchar(12) NOT NULL COMMENT '合约代码',
+  `InstrumentName` varchar(64) DEFAULT NULL COMMENT '合约名称',
+  `Commission` decimal(16,3) NOT NULL COMMENT '手续费',
+  `ExchangeMargin` decimal(18,2) NOT NULL COMMENT '交易所保证金',
+  `HedgeFlag` tinyint(4) NOT NULL COMMENT '投机套保标志',
+  `MarginRateByMoney` decimal(8,5) NOT NULL COMMENT '保证金率',
+  `PosiDirection` tinyint(4) NOT NULL COMMENT '持仓多空方向：2=买多，3=卖空',
+  `Position` decimal(18,0) NOT NULL COMMENT '当前持仓数量',
+  `PositionCost` decimal(18,2) NOT NULL COMMENT '持仓成本',
+  `PositionDate` varchar(12) DEFAULT NULL COMMENT '持仓日期',
+  `PositionProfit` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '持仓盈亏 （浮动盈亏）',
+  `PreMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '上次占用的保证金',
+  `PreSettlementPrice` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '上次结算价 （持仓均价）',
+  `SettlementPrice` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '本次结算价 （最新价）',
+  `TodayPosition` decimal(18,5) NOT NULL COMMENT '今日持仓',
+  `UseMargin` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '占用的保证金',
+  `YdPosition` decimal(18,5) NOT NULL COMMENT '上日持仓',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `instrument_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '合约价值'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `portfolio_account`
+--
+
+CREATE TABLE `oms_sync`.`portfolio_account` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `total_asset` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '总资产',
+  `net_asset` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '净资产',
+  `market_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市值',
+  `net_value` decimal(18,5) NOT NULL COMMENT '单位净值',
+  `balance_amount` decimal(18,5) NOT NULL COMMENT '余额',
+  `usable_amount` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '可用资金',
+  `unfrozen_amount` decimal(18,5) NOT NULL COMMENT '解冻资金',
+  `frozen_amount` decimal(18,5) NOT NULL COMMENT '冻结资金',
+  `tmp_frozen_amount` decimal(18,5) NOT NULL COMMENT '临时冻结资金',
+  `manual_frozen_amount` decimal(18,5) NOT NULL COMMENT '手工冻结',
+  `trade_fee` decimal(13,5) NOT NULL COMMENT '交易费用',
+  `platform_fee` decimal(13,5) NOT NULL COMMENT '平台费用',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `portfolio_position`
+--
+
+CREATE TABLE `oms_sync`.`portfolio_position` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `stock_id` varchar(12) NOT NULL COMMENT '股票ID',
+  `stock_name` varchar(64) DEFAULT NULL COMMENT '股票名称',
+  `hold_cost` decimal(16,3) NOT NULL COMMENT '持仓成本',
+  `hold_volume` decimal(15,2) NOT NULL COMMENT '持仓数量',
+  `usable_volume` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '可用数量',
+  `buy_volume` decimal(16,3) NOT NULL COMMENT '当日买入数量',
+  `sell_volume` decimal(16,3) NOT NULL COMMENT '当日卖出数量',
+  `total_fee` decimal(16,5) NOT NULL COMMENT '总费用',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `sell_frozen_volume` decimal(15,2) NOT NULL COMMENT '卖出冻结数量',
+  `frozen_volume` decimal(15,2) NOT NULL COMMENT '冻结可卖数量',
+  `given_amount` decimal(16,3) NOT NULL COMMENT '股票分红',
+  `market_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市值',
+  `cost_price` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '成本价',
+  `latest_price` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市价',
+  `profit_loss_amount` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '盈亏金额',
+  `profit_loss_rate` decimal(8,4) NOT NULL DEFAULT '0.0000' COMMENT '盈亏比例'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `portfolio_stats_account`
+--
+
+CREATE TABLE `oms_sync`.`portfolio_stats_account` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `stats_day` char(10) NOT NULL,
+  `total_asset` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '总资产',
+  `net_asset` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '净资产',
+  `market_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市值',
+  `net_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '净值',
+  `balance_amount` decimal(18,5) NOT NULL COMMENT '余额',
+  `usable_amount` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '可用资金',
+  `unfrozen_amount` decimal(18,5) NOT NULL COMMENT '解冻资金',
+  `frozen_amount` decimal(18,5) NOT NULL COMMENT '冻结资金',
+  `tmp_frozen_amount` decimal(18,5) NOT NULL COMMENT '临时冻结资金',
+  `trade_fee` decimal(13,5) NOT NULL COMMENT '交易费用',
+  `manual_frozen_amount` decimal(18,5) NOT NULL COMMENT '手工冻结',
+  `platform_fee` decimal(13,5) NOT NULL COMMENT '平台费用',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `portfolio_stats_position`
+--
+
+CREATE TABLE `oms_sync`.`portfolio_stats_position` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL COMMENT '组合ID',
+  `stats_day` char(10) NOT NULL,
+  `stock_id` varchar(12) NOT NULL COMMENT '股票ID',
+  `stock_name` varchar(64) DEFAULT NULL COMMENT '股票名称',
+  `hold_cost` decimal(16,3) NOT NULL COMMENT '持仓成本',
+  `hold_volume` decimal(15,2) NOT NULL COMMENT '持仓数量',
+  `usable_volume` decimal(15,2) NOT NULL DEFAULT '0.00' COMMENT '可用数量',
+  `buy_volume` decimal(16,3) NOT NULL COMMENT '当日买入数量',
+  `sell_volume` decimal(16,3) NOT NULL COMMENT '当日卖出数量',
+  `sell_frozen_volume` decimal(15,2) NOT NULL COMMENT '卖出冻结数量',
+  `frozen_volume` decimal(15,2) NOT NULL COMMENT '冻结可卖数量',
+  `given_amount` decimal(16,3) NOT NULL COMMENT '股票分红',
+  `market_value` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市值',
+  `cost_price` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '成本价',
+  `latest_price` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '市价',
+  `total_fee` decimal(16,5) NOT NULL COMMENT '总费用',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `profit_loss_amount` decimal(18,5) NOT NULL DEFAULT '0.00000' COMMENT '盈亏金额',
+  `profit_loss_rate` decimal(8,4) NOT NULL DEFAULT '0.0000' COMMENT '盈亏比例'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `stock_deal`
+--
+
+CREATE TABLE `oms_sync`.`stock_deal` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `product_id` int(11) DEFAULT NULL COMMENT '产品ID',
+  `stock_id` varchar(100) NOT NULL DEFAULT '',
+  `stock_name` varchar(64) DEFAULT NULL COMMENT '股票名称',
+  `order_id` varchar(100) NOT NULL DEFAULT '' COMMENT '委托编号',
+  `deal_id` varchar(100) NOT NULL DEFAULT '' COMMENT '成交编号',
+  `deal_date` varchar(11) NOT NULL DEFAULT '' COMMENT '成交日期 YYYY-MM-DD',
+  `deal_type` int(11) NOT NULL COMMENT '成交方向, 买入 / 卖出',
+  `deal_flag` int(11) NOT NULL COMMENT '成交摘要',
+  `is_cancel` int(11) NOT NULL,
+  `deal_price` varchar(100) NOT NULL DEFAULT '' COMMENT '价格',
+  `deal_volume` varchar(100) NOT NULL DEFAULT '' COMMENT '数量',
+  `deal_amount` varchar(100) NOT NULL DEFAULT '' COMMENT '成交金额',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `dealed_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT ' 成交时间',
+  `contain` text NOT NULL,
+  `is_handle` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `workflow_entrust`
+--
+
+CREATE TABLE `oms_sync`.`workflow_entrust` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) NOT NULL COMMENT '创建人 uid',
+  `order_id` varchar(32) NOT NULL DEFAULT '' COMMENT '订单 id, 与 stock order 中对应',
+  `product_id` int(11) NOT NULL COMMENT '订单所属组合 id, 冗余数据, 方便查询',
+  `entrust_stock_name` varchar(64) DEFAULT NULL COMMENT '股票名称',
+  `entrust_stock_code` varchar(100) NOT NULL DEFAULT '',
+  `entrust_price` decimal(7,3) NOT NULL COMMENT '委托价格',
+  `entrust_cost_price` decimal(9,5) NOT NULL COMMENT '委托成本价',
+  `entrust_amount` int(11) UNSIGNED NOT NULL COMMENT '委托数量',
+  `entrust_model` int(11) NOT NULL COMMENT '委托方式, 限价/市价',
+  `entrust_type` int(11) NOT NULL COMMENT '委托方向, 买/卖',
+  `entrust_state` int(11) NOT NULL COMMENT '操盘手委托声明, 下单/改单/撤单',
+  `entrust_date` varchar(16) DEFAULT NULL COMMENT '委托日期',
+  `entrust_at` datetime DEFAULT NULL COMMENT '委托时间',
+  `executor_uid` int(11) NOT NULL COMMENT '执行员 id',
+  `status` int(11) NOT NULL COMMENT '执行员 执行状态',
+  `msg` varchar(2000) NOT NULL DEFAULT '' COMMENT '拒绝 / 删除原因',
+  `is_open` int(11) NOT NULL DEFAULT '0',
+  `alloced_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `batch_no` varchar(40) NOT NULL COMMENT '所属批量订单号',
+  `last_dispatch_time` int(11) NOT NULL DEFAULT '0' COMMENT '最近一次分发时间',
+  `repeat_cancel_times` int(11) NOT NULL DEFAULT '0' COMMENT '重复撤单次数',
+  `ins_status` int(11) NOT NULL COMMENT '指令状态',
+  `entrust_status` int(11) NOT NULL COMMENT '委托状态',
+  `deal_status` int(11) NOT NULL COMMENT '成交状态',
+  `cancel_volume` int(11) NOT NULL COMMENT '撤单数量',
+  `is_handle` int(11) NOT NULL COMMENT '是否已处理 0:未处理 1:已处理',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `workflow_log`
+--
+
+CREATE TABLE `oms_sync`.`workflow_log` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `original_ploy_id` int(11) NOT NULL,
+  `workflow_id` int(11) NOT NULL,
+  `handler_uid` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `contain` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `futures_account`
+--
+ALTER TABLE `oms_sync`.`futures_account`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `futures_deal`
+--
+ALTER TABLE `oms_sync`.`futures_deal`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `deal_id` (`deal_id`);
+
+--
+-- Indexes for table `futures_entrust`
+--
+ALTER TABLE `oms_sync`.`futures_entrust`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `instrumentID` (`InstrumentID`);
+
+--
+-- Indexes for table `futures_position`
+--
+ALTER TABLE `oms_sync`.`futures_position`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `InstrumentID` (`product_id`,`InstrumentID`);
+
+--
+-- Indexes for table `futures_stats_account`
+--
+ALTER TABLE `oms_sync`.`futures_stats_account`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`,`stats_day`);
+
+--
+-- Indexes for table `futures_stats_position`
+--
+ALTER TABLE `oms_sync`.`futures_stats_position`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `InstrumentID` (`product_id`,`stats_day`,`InstrumentID`);
+
+--
+-- Indexes for table `portfolio_account`
+--
+ALTER TABLE `oms_sync`.`portfolio_account`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `portfolio_position`
+--
+ALTER TABLE `oms_sync`.`portfolio_position`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `product_id` (`product_id`,`stock_id`) USING BTREE;
+
+--
+-- Indexes for table `portfolio_stats_account`
+--
+ALTER TABLE `oms_sync`.`portfolio_stats_account`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`,`stats_day`);
+
+--
+-- Indexes for table `portfolio_stats_position`
+--
+ALTER TABLE `oms_sync`.`portfolio_stats_position`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`,`stats_day`,`stock_id`);
+
+--
+-- Indexes for table `stock_deal`
+--
+ALTER TABLE `oms_sync`.`stock_deal`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `u` (`stock_id`,`order_id`,`deal_id`,`deal_date`,`deal_type`,`deal_flag`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `is_cancel` (`is_cancel`),
+  ADD KEY `deal_id` (`deal_id`),
+  ADD KEY `deal_type` (`deal_type`),
+  ADD KEY `is_cancel_2` (`is_cancel`),
+  ADD KEY `order_id_2` (`order_id`),
+  ADD KEY `dealed_at` (`dealed_at`);
+
+--
+-- Indexes for table `workflow_entrust`
+--
+ALTER TABLE `oms_sync`.`workflow_entrust`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at` (`created_at`),
+  ADD KEY `updated_at` (`updated_at`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `entrust_stock_code` (`entrust_stock_code`),
+  ADD KEY `entrust_type` (`entrust_type`),
+  ADD KEY `executor_uid` (`entrust_price`),
+  ADD KEY `status` (`entrust_amount`),
+  ADD KEY `entrust_model` (`entrust_model`);
+
+--
+-- Indexes for table `workflow_log`
+--
+ALTER TABLE `oms_sync`.`workflow_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `original_ploy_id` (`original_ploy_id`),
+  ADD KEY `workflow_id` (`workflow_id`),
+  ADD KEY `handler_uid` (`handler_uid`),
+  ADD KEY `type` (`type`),
+  ADD KEY `created_at` (`created_at`);
+
+--
+-- 在导出的表使用AUTO_INCREMENT
+--
+
+--
+-- 使用表AUTO_INCREMENT `futures_account`
+--
+ALTER TABLE `oms_sync`.`futures_account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- 使用表AUTO_INCREMENT `futures_deal`
+--
+ALTER TABLE `oms_sync`.`futures_deal`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+--
+-- 使用表AUTO_INCREMENT `futures_entrust`
+--
+ALTER TABLE `oms_sync`.`futures_entrust`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+--
+-- 使用表AUTO_INCREMENT `futures_position`
+--
+ALTER TABLE `oms_sync`.`futures_position`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+--
+-- 使用表AUTO_INCREMENT `futures_stats_account`
+--
+ALTER TABLE `oms_sync`.`futures_stats_account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2899;
+--
+-- 使用表AUTO_INCREMENT `futures_stats_position`
+--
+ALTER TABLE `oms_sync`.`futures_stats_position`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+--
+-- 使用表AUTO_INCREMENT `portfolio_account`
+--
+ALTER TABLE `oms_sync`.`portfolio_account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+--
+-- 使用表AUTO_INCREMENT `portfolio_position`
+--
+ALTER TABLE `oms_sync`.`portfolio_position`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1721;
+--
+-- 使用表AUTO_INCREMENT `portfolio_stats_account`
+--
+ALTER TABLE `oms_sync`.`portfolio_stats_account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=753;
+--
+-- 使用表AUTO_INCREMENT `portfolio_stats_position`
+--
+ALTER TABLE `oms_sync`.`portfolio_stats_position`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1885;
+--
+-- 使用表AUTO_INCREMENT `stock_deal`
+--
+ALTER TABLE `oms_sync`.`stock_deal`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
+--
+-- 使用表AUTO_INCREMENT `workflow_entrust`
+--
+ALTER TABLE `oms_sync`.`workflow_entrust`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=501;
+--
+-- 使用表AUTO_INCREMENT `workflow_log`
+--
+ALTER TABLE `oms_sync`.`workflow_log`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+
+------------------------------------------------------------------------
+                      oms_sync  END
+------------------------------------------------------------------------
+
+#独立配置文件更新
+platform
+env('PLATFORM_CFG_UTILITY_CONTROL_URI', '192.168.0.20'),
+database  文件
+env('DB_HOST_TONGLIAN', '192.168.0.30'),
+env('DB_DATABASE_TONGLIAN', 'tonglian'),
+env('DB_USERNAME_TONGLIAN', 'root'),
+env('DB_PASSWORD_TONGLIAN', '123456'),
+
+#crontab定时任务
+#时实缓存报表数据  --buty
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan report:product_group_report >> /data/www/gmf_oms/storage/logs/product_group_report.log 2>&1
+#生成报表数据  --buty
+00 18-22 * * * /usr/bin/php /data/www/gmf_oms/artisan report:save_asset_report >> /data/www/gmf_oms/storage/logs/report_save_asset_report.log 2>&1
+#检测券商登录状态  --buty
+* 8-18 * * * /usr/bin/php /data/www/gmf_oms/artisan broker:check_login_status >> /data/www/gmf_oms/storage/logs/broker_check_login_status.log 2>&1
+#每日盘前自动登录券商  --buty
+30,50 8 * * * /usr/bin/php /data/www/gmf_oms/artisan broker:login_sec >> /data/www/gmf_oms/storage/logs/broker_login_sec.log 2>&1
+
+# 新增券商期货数据同步脚本 -- EVAN
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan broker:automatic_sync >> /data/www/gmf_oms/storage/logs/broker_automatic_sync.log 2>&1
+* * * * * /usr/bin/php /data/www/gmf_oms/artisan future:automatic_sync >> /data/www/gmf_oms/storage/logs/future_automatic_sync.log 2>&1
+
+# MMS新增获取AMAC行业和停牌股票列表
+0 19,21 * * * /usr/bin/php /data/www/gmf_mms/artisan market-quote:sync-industry >> /data/www/gmf_mms/storage/logs/sync_industry.log 2>&1
+0 8,9 * * * /usr/bin/php /data/www/gmf_mms/artisan market-quote:sync-suspended >> /data/www/gmf_oms/storage/logs/sync_suspended.log 2>&1
+
+
+#版本发布初始化操作
+--将专户版资产拆分成借款金额和保证金金额
+/usr/bin/php /data/www/gmf_bms/artisan bms:split_capital
+
+--操盘侠特供  同步更新AMS杠杆比
+/usr/bin/php /data/www/gmf_bms/artisan platform:sync_product
+
+-- 股票类型库  buty
+CREATE TABLE IF NOT EXISTS `oms_v3`.`security_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `security_id` char(10) COLLATE utf8_unicode_ci NOT NULL,
+  `type` int(11) NOT NULL COMMENT '1:货币基金 2:债基',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+INSERT INTO `oms_v3`.`security_types` (`id`, `security_id`, `type`, `created_at`, `updated_at`) VALUES
+(1, '150143', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, '150144', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(3, '150164', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(4, '150165', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(5, '150188', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(6, '150189', 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(7, '511990', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(8, '511880', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(9, '159003', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(10, '159001', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(11, '519899', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(12, '519898', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(13, '519889', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(14, '519888', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(15, '519801', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(16, '519800', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(17, '511760', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+
+
+--ALEN
+--把机构设置为专户版
+UPDATE `gmf_bms`.`organizations` SET `theme` = '3';
+--给机构设置系统设置权限  org_id 根据需求配置
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`) VALUES (1, 1, 48, now(), now());
+
+--机构版管理员需要的账户管理和报表权限  org_id 根据需求配置
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`) VALUES (1, 1, 44, now(), now());
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`) VALUES (1, 1, 45, now(), now());
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`) VALUES (1, 1, 46, now(), now());
+INSERT INTO `oms_v3`.`role_permissions` (`org_id`, `role_id`, `permission_id`, `created_at`, `updated_at`) VALUES (1, 1, 47, now(), now());
+
+
+//通联数据表加索引
+ALTER TABLE `tonglian`.`mkt_idxd` ADD INDEX index_t (`TICKER_SYMBOL`);
+ALTER TABLE `tonglian`.`mkt_idxd` ADD INDEX index_d (`TRADE_DATE`);
+
+--EVAN
+--BMS 创建到storage的软链接
+# cd /data/gmf-utility/public
+# ln -s ../storage/app/public storage
+
+
+#运维需求
+配置nginx转发
+location ^~ /task/uploadxls/
+{
+        proxy_pass http://192.168.0.20:39080;
+}
+# 生成报表excel
+location ^~ /utility/
+{
+        proxy_pass http://192.168.0.20:39080;
+}
+//配置配置文件 通联同步库的host 和 用户名
+'host'      => env('DB_HOST_TONGLIAN', '192.168.0.30'),
+'database'  => env('DB_DATABASE_TONGLIAN', 'tonglian'),
+'username'  => env('DB_USERNAME_TONGLIAN', 'root'),
+'password'  => env('DB_PASSWORD_TONGLIAN', '123456'),
+
+//期货网关
+'host'     => env('RDCFG_FUTURE_HOST', '192.168.0.21'),
+'port'     => env('RDCFG_FUTURE_PORT', 6379),
+
+
+-- EVAN
+# 期货同步表升级
+ALTER TABLE `oms_sync`.`futures_position` DROP INDEX InstrumentID;
+ALTER TABLE `oms_sync`.`futures_stats_position` DROP INDEX InstrumentID;
+ALTER TABLE `oms_sync`.`futures_position` ADD UNIQUE( `product_id`, `InstrumentID`, `PosiDirection`);
+ALTER TABLE `oms_sync`.`futures_stats_position` ADD UNIQUE( `product_id`, `stats_day`, `InstrumentID`, `PosiDirection`);

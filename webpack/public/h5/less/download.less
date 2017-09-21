@@ -1,0 +1,39 @@
+// out: ../css/download.min.css, sourcemap: false, compress: true
+
+@import url(reset.import.less);
+.download-wrap{
+    .section{text-align:center;
+        h1{font-size:20px;}
+        p{font-size:14px;line-height:1.75;}
+        &.head{.bgSingle('./img/download/bg.head.png');background-size:cover;position:relative;color:@white;padding:80px 0;
+            h1{padding-bottom:15px;font-size:32px;font-weight:400;}
+            .btns{margin-top:30px;}
+            img.hand{width:370px;height:auto;position:absolute;bottom:0;right:120px;}
+        }
+        &.superman{color:@black;
+            .container{padding:50px 20px;}
+            img.supermen{width:100%;margin-bottom:30px;display:block;}
+            p{line-height:1.6;margin-top:10px;}
+        }
+        &.platform{.bgSingle('./img/download/bg.platform.png');background-size:cover;color:@black;padding:40px 0 20px;
+            img.platform-phone{width:200px;height:auto;}
+            h1{}
+            img.platforms{height:22px;width:auto;margin-top:18px;}
+        }
+        &.foot{.bgSingle('./img/download/bg.foot.png');background-size:cover;color:@white;padding:80px 0 60px;
+            h1{margin-bottom:20px;}
+            .btns{margin-top:25px;}
+        }
+    }
+    .btns{
+        .ui-btn{.ui-btn(160px,48px); + .ui-btn{display:none;}}
+        img{height:auto;vertical-align:middle;margin-right:.5em;
+            &.apple{width:16px;}
+            &.android{width:17px;}
+            &.qr-small{width:48px;}
+        }
+        p.links{margin-top:20px;color:rgba(255,255,255,.4);font-size:12px;
+            a{text-decoration:underline;margin-right:.75em;color:rgba(255,255,255,.4);}
+        }
+    }
+}

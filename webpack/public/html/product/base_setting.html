@@ -1,0 +1,81 @@
+<div class="container-title">
+  <h2 class="page-title"></h2>
+  <div class="container-title-right" id="productHeader">
+    <vue-product-display :user_info="userInfo" :group_info="groupInfo" :balance_info="balanceInfo" :org_info="org_info"></vue-product-display>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<div class="container-content">
+  <div class="container-content-menu">
+    <div id="productMenu">
+      <vue-product-menu :permission="permission" :active="active" :disabled="disabled" :goto="goto"></vue-product-menu>
+    </div>
+  </div>
+
+  <div id="form_add_vue" class="container-content-form">
+    <form id="form_add" v-if="FD.org_info.theme != 3" class="common-form" autocomplete="off">
+      <div class="form-field">
+        <label class="form-left">策略名称<b>*</b></label>
+        <input name="name" class="input-text " v-model="FD.product_name" type="text" placeholder="请输入名称" />
+      </div>
+      <div class="form-field">
+        <label class="form-left">份额<b>*</b></label>
+        <input name="volume" class="input-text " v-model="FD.volume" type="text" placeholder="请输入份额" />
+      </div>
+      <div class="form-field" :class="{'form-field-inline': FD.is_running == 0}">
+        <label class="form-left">初始资金<b>*</b></label>
+        <input v-if="FD.is_running == 0" name="init_capital" class="input-text " v-model="FD.begin_capital" type="text" placeholder="请输入初始资金" />
+        <span v-if="FD.is_running == 1" name="init_capital" class="input-text " type="text" placeholder="请输入初始资金" >{{FD.is_forever == 1 ? FD.begin_capital : '--'}}</span>
+      </div>
+      <div v-if="FD.is_running == 0" class="form-field">
+        <div class="form-field-tip">
+          <span>账户可分配金额：</span><span style="margin-left: 0;">{{numeralNumber(FD.available_amount)}}</span>
+        </div>
+      </div>
+      <div class="form-field form-field-inline">
+        <label class="form-left">基金经理<b>*</b></label>
+        <select name="operator_uid" class="input-text pb_name" v-model="FD.operator_uid" placeholder="请选择基金经理">
+            <option v-for="manager in managerInfo" :value="manager.value" :disabled="manager.status == 2">{{manager.name}}</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <div class="form-field-tip">
+          <span>没有找到需要的基金经理用户，</span><a v-on:click="createManager">去创建</a>
+        </div>
+      </div>
+      <div class="form-field">
+        <div class="form-field-tip">
+          <label><input type="checkbox" name="autoVerify" v-model="FD.auto_verify">设为自动审核（针对该策略提交的指令无需审核）</label>
+        </div>
+      </div>
+      <div class="form-btns">
+        <button type="submit" class="submit_btn">保存</button>
+        <button type="button" class="cancel_btn" v-on:click="doCancel">取消</button>
+      </div>
+    </form>
+
+    <form id="form_add" v-if="FD.org_info.theme == 3" class="common-form" autocomplete="off">
+      <div class="form-field">
+        <label class="form-left">策略名称<b>*</b></label>
+        <input name="name" class="input-text " v-model="FD.product_name" type="text" placeholder="请输入名称" />
+      </div>
+      <div class="form-field">
+        <label class="form-left">用户账号</label>
+        <input name="userName" disabled="disabled" v-model="FD.operator_uid" class="input-text " type="text" />
+      </div>
+      <div class="form-field form-field-inline">
+        <label class="form-left">杠杆比例<b>*</b></label>
+        <input name="lever_ratio" class="input-text " v-model="FD.lever_ratio" type="text" placeholder="填0则表示不设杠杆比例限制" />
+      </div>
+      <div class="form-field">
+        <div class="form-field-tip">
+          <label><input type="checkbox" name="autoVerify" v-model="FD.auto_verify">设为自动审核（针对该策略提交的指令无需审核）</label>
+        </div>
+      </div>
+      <div class="form-btns">
+        <button type="submit" class="submit_btn">保存</button>
+        <button type="button" class="cancel_btn" v-on:click="doCancel">取消</button>
+      </div>
+    </form>
+  </div>
+</div>

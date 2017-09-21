@@ -1,0 +1,1 @@
+ALTER TABLE `oms_v3`.`portfolio_settlement` ADD `other_fee1` DECIMAL( 18, 5 ) NOT NULL COMMENT '其他费用' AFTER `today_fund_out`;

@@ -1,0 +1,23 @@
+@import url(reset.import.less);
+
+section{padding:25px 20px 15px 60px;
+	> h1{position:relative;left:-35px;font-size:@textSizeLargeX;
+		span{display:inline-block;width:35px;color:@red;}
+	}
+	> p{font-size:@textSizeSmall;color:@textColorLight;text-align:justify;}
+	.card{background-color:@yellow;background-image:linear-gradient(-180deg,lighten(@yellow,7.5%),darken(@yellow,7.5%)); margin:20px 0 10px;padding:15px 20px;border-radius:4px;
+		p{font-size:75%;}
+		hr{border:@border;margin:30px 0 10px;
+			// +h2{color:@textColorLight;}
+		}
+		h2{font-size:75%;}
+	}
+
+	&.notice{
+		.card{
+			p{margin-top:15px;}
+			+p{font-size:70%;}
+		}
+	}
+	&:last-of-type{margin-bottom:65px;}
+}

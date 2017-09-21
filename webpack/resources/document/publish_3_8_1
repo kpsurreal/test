@@ -1,0 +1,159 @@
+#开发源代码分支
+ /develop
+#版本发布DB及初始化操作
+# 新增交易所的股票股票类型,仅同步版
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `market` tinyint(4) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1:A股 2:H股' AFTER `is_handle`;
+ALTER TABLE `oms_sync`.`stock_deal` ADD COLUMN `market` tinyint(4) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1:A股 2:H股' AFTER `is_handle`;
+ALTER TABLE `oms_sync`.`portfolio_position` ADD COLUMN `market` tinyint(4) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1:A股 2:H股' AFTER `profit_loss_rate`;
+
+ALTER TABLE `oms_sync`.`portfolio_stats_position` ADD COLUMN `market` tinyint(4) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1:A股 2:H股' AFTER `profit_loss_rate`;
+
+
+# 新增汇率字段,仅对港股有效
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `exchange_rate` decimal(18,8) UNSIGNED NOT NULL DEFAULT 0 COMMENT '人民币汇率，例如1美元除以1人民币=6.xxx' AFTER `updated_at`;
+
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `bs_symbol_text` varchar(100) NOT NULL COMMENT '买卖标志';
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `quote_type_text` varchar(100) NOT NULL COMMENT '报价类型';
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `vendor_status_text` varchar(100) NOT NULL COMMENT '状态描述';
+
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `deal_volume` int(11) NOT NULL COMMENT '成交数量';
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `deal_price` decimal(10,4) NOT NULL COMMENT '成交价格';
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD COLUMN `deal_amount` decimal(16,3) NOT NULL COMMENT '成交金额';
+
+ALTER TABLE `oms_sync`.`stock_deal` ADD COLUMN `bs_symbol_text` varchar(100) NOT NULL COMMENT '买卖标志';
+
+INSERT INTO `oms_v3`.`stock_user_config` (`user_id`, `type`, `config_val`, `config_desc`, `created_at`, `updated_at`)
+VALUES (0, 'HK', '4', '竞价限价', now(), now()), (0, 'HK', '5', '增强限价', now(), now());
+ALTER TABLE `gmf_bms`.`product_oms` ADD `group_id` INT(11)  NOT NULL   COMMENT '产品组ID product_group';
+
+--新增迅投PB字段
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_guid` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_username` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_disk_info` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_version` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_process_id` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_client_id` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_cpu_ex` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_bios_id` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` ADD `vc_disk_name` VARCHAR(255)  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` CHANGE `vc_cpu` `vc_cpu` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE `gmf_bms`.`pb_account_info` CHANGE `vc_ser_no` `vc_ser_no` VARCHAR(255)  CHARACTER SET utf8  COLLATE utf8_general_ci  NOT NULL  DEFAULT '';
+
+
+ALTER TABLE `gmf_bms`.`otc_private_placement` CHANGE `volume` `volume` BIGINT  NOT NULL;
+
+CREATE TABLE `gmf_bms`.`user_permissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `permission_id` mediumint(9) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `gmf_bms`.`role_permissions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `state` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--根据券商ID修改账户的通道值 for PB
+UPDATE `gmf_bms`.`product_base` SET `channel`=1 WHERE  `securities_id` IN ('pb');
+UPDATE `gmf_bms`.`product_base` SET `channel`=2 WHERE  `securities_id` IN ('jz', 'zsjz', 'gfjz');
+UPDATE `gmf_bms`.`product_base` SET `channel`=3 WHERE  `securities_id` IN ('ims');
+
+UPDATE `oms_sync`.`stock_deal` SET bs_symbol_text='买入' WHERE deal_type=1 AND  bs_symbol_text='';
+UPDATE `oms_sync`.`stock_deal` SET bs_symbol_text='卖出' WHERE deal_type=2 AND  bs_symbol_text='';
+UPDATE `oms_sync`.`workflow_entrust` SET bs_symbol_text='买入' WHERE entrust_type=1 AND  bs_symbol_text='';
+UPDATE `oms_sync`.`workflow_entrust` SET bs_symbol_text='卖出' WHERE entrust_type=2 AND  bs_symbol_text='';
+--将港股市场重置
+UPDATE `oms_sync`.`portfolio_position` SET market=40 WHERE right(stock_id, 3) = '.HK';
+#独立配置文件更新
+
+#crontab定时任务
+
+#初始化数据脚本
+
+BMS根目录下执行
+php artisan platform:set_permission --sync_oms=1
+php artisan init:group_operator
+
+###持仓报表生成脚本, 每分钟执行一次, 默认生成系统中全部机构, 可指定生成指定机构 id
+/usr/bin/php /data/www/gmf_bms/artisan report_build_org:stock_position
+
+#BMS根目录下执行 (product_oms表更改group_id结构后老数据更正) superzhang 20170718 17:15
+php artisan report:complex_report
+
+
+####ck---###
+##增加数据表
+CREATE TABLE `gmf_bms`.`report_file_center` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `user_id` int(11) NOT NULL,
+  `down_date` int(11) NOT NULL DEFAULT '0' COMMENT '生成时间，如20170627',
+  `category` varchar(32) DEFAULT NULL COMMENT '报表类别',
+  `report_name` varchar(32) DEFAULT NULL COMMENT '报表名称',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '报表生成状态，0生成中，1已生成，2已失败',
+  `is_delete` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `down_url` varchar(255) DEFAULT NULL COMMENT '下载链接',
+  `request_url` text COMMENT '请求生成文件参数',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx` (`user_id`,`down_date`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `gmf_bms`.`login_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `org_id` int(11) NOT NULL COMMENT '机构id',
+  `login_date` int(11) NOT NULL DEFAULT '0' COMMENT '当前日期，如20170705',
+  `desc` varchar(255) DEFAULT NULL COMMENT '原因描述',
+  `base_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx` (`org_id`,`login_date`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `gmf_bms`.`remarks` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `key` varchar(100) NOT NULL DEFAULT '',
+  `value` varchar(1500) NOT NULL DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `key` (`key`),
+  KEY `created_at` (`created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+###自动登录脚本和检测脚本由oms转移到bms
+/usr/bin/php /data/www/gmf_oms/artisan broker:login_sec             --> /usr/bin/php /data/www/gmf_bms/artisan broker:login_sec
+
+/usr/bin/php /data/www/gmf_oms/artisan broker:check_login_status      --> /usr/bin/php /data/www/gmf_bms/artisan broker:check_login_status
+
+###
+bms-utility nginx配置增加
+        location /storage/{
+               root /;
+               rewrite ^/storage/(.*)$ /Users/cklive/gmf-utility/storage/app/public/$1;
+               if ($request_uri ~* ^.*\/(.*)\.(xlsx|txt|csv)(\?n=([^&]+))$) {
+                  add_header Content-Disposition "attachment;filename=$arg_n.$2";
+               }
+               break;
+        }
+
+###结束 ---ck
+
+### <<<标题：今日委托缓存刷新|频率：每天8到20点的每1分钟|作者：kemin
+*/1 8-20 * * * /usr/bin/php /data/www/gmf_oms/artisan oms_sync:refresh_today_entrusts_cache >> /data/www/gmf_oms/storage/logs/refresh_today_entrusts_cache.log 2>&1
+### >>>

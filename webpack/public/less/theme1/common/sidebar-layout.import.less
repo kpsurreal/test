@@ -1,0 +1,71 @@
+@import url(common/reset.import.less);
+
+.body .container{padding-top: 40px;}
+.main-container{float:left;padding-left: 60px;border-left: 1px solid rgba(0,0,0,0.05);min-height: 240px;width: 918px;}
+
+// sidebar
+
+.sidebar{float:left;width: 200px;
+	.sidebar-tit{line-height: 40px;font-size: 14px;}
+	.sidebar-nav{
+		a{display: block;padding-left: 40px;position: relative;line-height: 40px;font-size: 14px;
+			&:hover{background-color: #f2f2f2;}
+			&.on,
+			&.on:hover{background-color: @black;color:@yellow;}
+			i{position: absolute;top:50%;margin-top:-10px;left:10px;background-repeat: no-repeat;width:20px;height:20px;background-image: url(img/icon-sidebar.png);}
+		}
+	}
+    .ui-btn{.ui-btn(100%,40px);margin-top:20px;}
+}
+
+.sidebar{
+	.icon-user-account{background-position:0 0px;}
+	.icon-user-history{background-position:0 -20px;}
+	.icon-user-profile{background-position:0 -40px;}
+	.icon-user-secure{background-position:0 -60px;}
+	.icon-user-preference{background-position:0 -80px;}
+
+	.icon-help-question{background-position:0 -120px;}
+	.icon-help-dictionary{background-position:0 -140px;}
+	.icon-help-pricing{background-position:0 -160px;}
+
+	.icon-about-us{background-position:0 -200px;}
+	.icon-join-us{background-position:0 -220px;}
+	.icon-follow-us{background-position:0 -240px;}
+	.icon-about-privacy{background-position:0 -260px;}
+
+	.icon-trade-running{background-position:0 -300px;}
+	.icon-trade-ending{background-position:0 -320px;}
+	.icon-trade-today{background-position:0 -340px;}
+	.icon-trade-condition{background-position:0 -360px;}
+	.icon-trade-history{background-position:0 -380px;}
+	.icon-user-bounty{background-position:0 -420px;}
+}
+
+.sidebar .sidebar-nav .on{
+	.icon-user-account{background-position:-20px 0px;}
+	.icon-user-history{background-position:-20px -20px;}
+	.icon-user-profile{background-position:-20px -40px;}
+	.icon-user-secure{background-position:-20px -60px;}
+	.icon-user-preference{background-position:-20px -80px;}
+
+	.icon-help-question{background-position:-20px -120px;}
+	.icon-help-dictionary{background-position:-20px -140px;}
+	.icon-help-pricing{background-position:-20px -160px;}
+
+	.icon-about-us{background-position:-20px -200px;}
+	.icon-join-us{background-position:-20px -220px;}
+	.icon-follow-us{background-position:-20px -240px;}
+	.icon-about-privacy{background-position:-20px -260px;}
+
+	.icon-trade-running{background-position:-20px -300px;}
+	.icon-trade-ending{background-position:-20px -320px;}
+	.icon-trade-today{background-position:-20px -340px;}
+	.icon-trade-condition{background-position:-20px -360px;}
+	.icon-trade-history{background-position:-20px -380px;}
+	.icon-user-bounty{background-position:-20px -420px;}
+}
+
+@media (min-resolution:2dppx),(-webkit-min-device-pixel-ratio:2){
+	.sidebar .sidebar-nav a i {background-image: url(img/icon-sidebar@2x.png) !important;background-size: 40px 440px;}
+}

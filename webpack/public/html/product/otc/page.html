@@ -1,0 +1,6 @@
+<!-- 场外资产 -->
+
+<div id="outside_asset">
+  <asset-out-head :product_list="product_list" :product_id="product_id" v-on:change_selected="product_id = ($event)" :product_info="product_info"></asset-out-head>
+  <asset-out-content :product_info="product_info" :product_name="product_name" :product_id="product_id" v-if="product_info.cash"></asset-out-content>
+</div>

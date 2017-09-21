@@ -1,0 +1,233 @@
+#同步模式委托增加删除功能
+ALTER TABLE `oms_sync`.`workflow_entrust` ADD `deleted_at` CHAR( 20 ) NULL DEFAULT NULL AFTER `is_handle`;
+
+#自动登录功能 ---ck
+ALTER TABLE `gmf_bms`.`product_base` ADD `auto_login` tinyint(4) NOT NULL DEFAULT '0';
+update `gmf_bms`.`product_base` set auto_login = 1;
+
+#product_sign产品增加标记和标杆表（张超 新增）
+CREATE TABLE `gmf_bms`.`product_sign` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(11) unsigned NOT NULL COMMENT '机构id',
+  `product_id` int(11) unsigned NOT NULL COMMENT '产品id',
+  `type` tinyint(1) unsigned NOT NULL COMMENT '产品类型:base_id=1, group_id=2。',
+  `sign_id` smallint(5) unsigned NOT NULL COMMENT '标记id',
+  `is_benchmarking` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否是标杆',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态：1生效，0失效',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#product_sign_group 产品标记表（张超 新增）
+CREATE TABLE `gmf_bms`.`product_sign_group` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `modifyDefaultId` int(11) DEFAULT NULL,
+  `org_id` int(11) unsigned NOT NULL COMMENT '机构id',
+  `keyword` varchar(60) NOT NULL DEFAULT '' COMMENT '标记词',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态：1生效，0失效',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=101;
+
+#默认初始化数据
+INSERT INTO `gmf_bms`.`product_sign_group` (`id`, `modifyDefaultId`, `org_id`, `keyword`, `status`, `created_at`, `updated_at`)
+VALUES
+	(1,NULL,0,'未标记',1,'2017-06-21 16:08:20','0000-00-00 00:00:00'),
+	(2,NULL,0,'红色',1,'2017-06-21 16:08:26','0000-00-00 00:00:00'),
+	(3,NULL,0,'粉色',1,'2017-06-21 16:08:27','0000-00-00 00:00:00'),
+	(4,NULL,0,'橘色',1,'2017-06-21 16:08:28','0000-00-00 00:00:00'),
+	(5,NULL,0,'橙色',1,'2017-06-21 16:08:29','0000-00-00 00:00:00'),
+	(6,NULL,0,'黄色',1,'2017-06-21 16:57:31','0000-00-00 00:00:00'),
+	(7,NULL,0,'墨色',1,'2017-06-21 16:57:44','0000-00-00 00:00:00'),
+	(8,NULL,0,'绿色',1,'2017-06-21 16:57:46','0000-00-00 00:00:00'),
+	(9,NULL,0,'靛色',1,'2017-06-21 16:57:48','0000-00-00 00:00:00'),
+	(10,NULL,0,'蓝色',1,'2017-06-21 16:57:49','0000-00-00 00:00:00'),
+	(11,NULL,0,'青色',1,'2017-06-21 16:57:52','0000-00-00 00:00:00'),
+	(12,NULL,0,'紫色',1,'2017-06-21 16:58:33','0000-00-00 00:00:00'),
+	(13,NULL,0,'褐色',1,'2017-06-21 16:58:48','0000-00-00 00:00:00'),
+	(14,NULL,0,'灰色',1,'2017-06-21 16:59:00','0000-00-00 00:00:00'),
+	(15,NULL,0,'黑色',1,'2017-06-21 16:59:09','0000-00-00 00:00:00');
+
+#report_remark 报表股票备注表 （张超 新增）
+CREATE TABLE `gmf_bms`.`report_remark` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `org_id` int(11) unsigned NOT NULL,
+  `product_id` int(11) unsigned NOT NULL,
+  `stock_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `type` tinyint(2) unsigned NOT NULL,
+  `remark` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `status` tinyint(2) unsigned NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+##########################OMS 脚本##########################
+# 盘前初始化
+05 00 * * * /usr/bin/php /data/www/gmf_oms/artisan day:init_env >> /data/www/gmf_oms/storage/logs/day_init_env.log 2>&1
+
+# 报表脚本迁移 ---ck
+
+/usr/bin/php /data/www/gmf_oms/artisan report:product_group_report   --> /usr/bin/php /data/www/gmf_bms/artisan report:product_group_report
+
+/usr/bin/php /data/www/gmf_oms/artisan report:save_asset_report      --> /usr/bin/php /data/www/gmf_bms/artisan report:save_asset_report
+
+/usr/bin/php /data/www/gmf_oms/artisan product:swap_read             --> /usr/bin/php /data/www/gmf_bms/artisan product:swap_read
+
+/usr/bin/php /data/www/gmf_oms/artisan product:store_suspension      --> /usr/bin/php /data/www/gmf_bms/artisan product:store_suspension
+
+# 数据表迁移，以下表由oms_v3到gmf_bms中 ---ck
+
+otc_cash、otc_cash_swap、otc_monetary_fund、otc_private_placement、otc_stock_swap、suspension_valuation、history_asset_report、product_attributes
+
+# 具体表结构如下  -------begin ---ck
+CREATE TABLE `gmf_bms`.`history_asset_report` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `stats_day` char(10) COLLATE utf8_unicode_ci NOT NULL COMMENT '统计日期',
+  `hst_id` int(11) NOT NULL,
+  `hst_type` enum('group','base') COLLATE utf8_unicode_ci NOT NULL,
+  `data_cont` text COLLATE utf8_unicode_ci NOT NULL COMMENT '数据内容',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `stats_day` (`stats_day`,`hst_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `gmf_bms`.`otc_cash_swap` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `balance_amount` decimal(18,5) NOT NULL COMMENT '资金额',
+  `market_value` decimal(18,5) NOT NULL,
+  `total_assets` decimal(18,5) NOT NULL,
+  `read_url` varchar(300) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `err_info` varchar(2000) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `state` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE `gmf_bms`.`otc_cash` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `amount` decimal(18,5) NOT NULL COMMENT '委托价格',
+  `state` tinyint(4) NOT NULL,
+  `remark` varchar(256) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `gmf_bms`.`otc_monetary_fund` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `stock_id` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `market_value` decimal(16,3) NOT NULL,
+  `volume` decimal(18,5) NOT NULL,
+  `profit_rate` decimal(7,4) NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+CREATE TABLE `gmf_bms`.`otc_private_placement` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `stock_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `stock_price` decimal(10,4) NOT NULL,
+  `volume` int(11) NOT NULL,
+  `share` decimal(18,5) NOT NULL,
+  `start_date` date NOT NULL,
+  `unlock_date` date NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+CREATE TABLE `gmf_bms`.`otc_stock_swap` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL,
+  `guest_id` tinyint(4) NOT NULL,
+  `list_number` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `hold_volume` int(11) NOT NULL,
+  `position_type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `valuation_date` int(11) NOT NULL,
+  `security_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `security_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `currency` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `begin_price` decimal(16,3) NOT NULL,
+  `current_price` decimal(16,3) NOT NULL,
+  `rise_fall_rate` decimal(7,4) NOT NULL,
+  `total_cost` decimal(16,3) NOT NULL,
+  `accumulate_profit` decimal(16,3) NOT NULL,
+  `total_profit` decimal(16,3) NOT NULL,
+  `market_value` decimal(16,3) NOT NULL,
+  `exchange_rate` decimal(8,6) NOT NULL,
+  `state` tinyint(4) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+CREATE TABLE `gmf_bms`.`product_attributes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL COMMENT '产品组ID',
+  `type` enum('base','group') COLLATE utf8_unicode_ci NOT NULL COMMENT '产品类型',
+  `adjust_assets` decimal(16,3) NOT NULL COMMENT '调整净资产',
+  `adjust_volume` decimal(16,3) NOT NULL COMMENT '调整份额',
+  `remarks` varchar(300) COLLATE utf8_unicode_ci NOT NULL COMMENT '产品备注',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+CREATE TABLE `gmf_bms`.`suspension_valuation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `org_id` int(11) NOT NULL COMMENT '机构ID',
+  `group_id` int(11) NOT NULL,
+  `type` enum('group','base') COLLATE utf8_unicode_ci NOT NULL,
+  `stock_id` char(10) COLLATE utf8_unicode_ci NOT NULL,
+  `discount_rate` decimal(13,5) NOT NULL COMMENT '[弃用]估值比率',
+  `adjust_date` date NOT NULL COMMENT '估值日期',
+  `is_adjust` int(11) NOT NULL COMMENT '0:未估值 1:已估值',
+  `amac_index` varchar(10) COLLATE utf8_unicode_ci NOT NULL COMMENT '对比行业标的代码',
+  `amac_last_price` decimal(13,5) NOT NULL COMMENT '对比行业标的指数',
+  `amac_price` decimal(13,5) NOT NULL COMMENT '最新AMAC价格',
+  `hold_volume` int(11) NOT NULL COMMENT '调整后市值',
+  `weight` decimal(8,6) NOT NULL COMMENT '权重',
+  `modify_market_value` decimal(16,3) NOT NULL COMMENT '调整后市值',
+  `state` tinyint(4) NOT NULL COMMENT '有效否',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `group_id` (`group_id`,`stock_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `gmf_bms`.`security_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `security_id` char(10) COLLATE utf8_unicode_ci NOT NULL,
+  `type` int(11) NOT NULL COMMENT '1:货币基金 2:债基',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+# 具体表结构如上  -------end ---ck

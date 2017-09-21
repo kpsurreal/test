@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192px" height="84px" viewBox="0 0 192 84" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.1 (15681) - http://www.bohemiancoding.com/sketch -->
+    <title>Rectangle 93 + Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Artboard-5" sketch:type="MSArtboardGroup" transform="translate(0.000000, -1.000000)">
+            <g id="Rectangle-93-+-Group" sketch:type="MSLayerGroup">
+                <rect id="Rectangle-93" sketch:type="MSShapeGroup" x="0" y="0" width="200" height="98"></rect>
+                <g id="Group" transform="translate(0.000000, 2.000000)">
+                    <g id="Group-Copy-2" transform="translate(5.000000, 0.000000)">
+                        <path d="M0.625,12.5 L29.375,12.5" id="Line" stroke="#CACACA" stroke-linecap="round" sketch:type="MSShapeGroup"></path>
+                        <path d="M0.625,5.5 L29.375,5.5" id="Line-Copy-5" stroke="#CACACA" stroke-linecap="round" sketch:type="MSShapeGroup"></path>
+                        <path d="M0.625,19.5 L29.375,19.5" id="Line-Copy-2" stroke="#CACACA" stroke-linecap="round" sketch:type="MSShapeGroup"></path>
+                        <path d="M0.625,26.5 L29.375,26.5" id="Line-Copy-3" stroke="#CACACA" stroke-linecap="round" sketch:type="MSShapeGroup"></path>
+                        <path d="M0.625,33.5 L29.375,33.5" id="Line-Copy-4" stroke="#CACACA" stroke-linecap="round" sketch:type="MSShapeGroup"></path>
+                        <rect id="Rectangle-142-Copy" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup" x="0" y="0" width="30" height="40" rx="1"></rect>
+                        <circle id="Oval-50" stroke="#000000" stroke-linecap="square" fill="#FFFFFF" sketch:type="MSShapeGroup" cx="28" cy="27" r="13"></circle>
+                        <circle id="Oval-50-Copy" fill="#FFDE00" sketch:type="MSShapeGroup" cx="28" cy="27" r="10"></circle>
+                        <text id="总" sketch:type="MSTextLayer" font-family="PingFang SC" font-size="12" font-weight="260" fill="#000000">
+                            <tspan x="22" y="31">总</tspan>
+                        </text>
+                    </g>
+                    <g id="￥-+-Oval-85-Copy-2-+-Oval-85-Copy-3-Copy-Copy" transform="translate(54.000000, 0.000000)" stroke="#000000" stroke-linecap="round" sketch:type="MSShapeGroup" stroke-linejoin="round">
+                        <path d="M39.8000001,12 C36.8255366,5.58333786 30.3044523,0.734332867 22.9600717,1.27263267e-08 C22.9600717,2.57067507 22.9600717,18.4999998 22.9600717,18.4999998 C22.9600717,18.4999998 38.3205224,12.8030436 39.8000001,12 Z" id="Oval-85-Copy-4" fill="#FFDE00"></path>
+                        <path d="M21.2038835,41.9708536 C32.5979797,41.9708536 42,32.575358 42,21.1891688 C42,18.5088881 41.5143945,15.9524709 40.6301614,13.6020519 C30.7835568,17.4477368 21.2038842,21.1891689 21.2038842,21.1891689 C21.2038842,21.1891689 21.2038838,8.61619234 21.2038835,0 C9.40202025,0 0,9.3954956 0,21.1891688 C0,32.575358 9.40202025,41.9708536 21.2038835,41.9708536 Z" id="Oval-85-Copy-2" fill="#FFFFFF"></path>
+                    </g>
+                    <g id="Group-Copy-2" transform="translate(161.000000, 0.000000)" sketch:type="MSShapeGroup" stroke-linecap="round">
+                        <path d="M0.625,12.5 L29.375,12.5" id="Line" stroke="#FFDE00"></path>
+                        <path d="M0.625,5.5 L29.375,5.5" id="Line-Copy-5" stroke="#FFDE00"></path>
+                        <path d="M0.625,19.5 L29.375,19.5" id="Line-Copy-2" stroke="#FFDE00"></path>
+                        <path d="M0.625,26.5 L29.375,26.5" id="Line-Copy-3" stroke="#FFDE00"></path>
+                        <path d="M0.625,33.5 L29.375,33.5" id="Line-Copy-4" stroke="#FFDE00"></path>
+                        <rect id="Rectangle-142-Copy" stroke="#000000" stroke-linejoin="round" x="0" y="0" width="30" height="40" rx="1"></rect>
+                    </g>
+                    <g id="Group-Copy-2" transform="translate(0.000000, 58.000000)" sketch:type="MSShapeGroup">
+                        <path d="M100,4 L112,5 L108,15 L112,25 L100,24 L100,4 Z" id="Rectangle-202" fill="#D43F2E"></path>
+                        <path d="M0,4 L12,5 L8,15 L12,25 L0,24 L0,4 Z" id="Rectangle-202" fill="#D43F2E" transform="translate(6.000000, 14.500000) scale(-1, 1) translate(-6.000000, -14.500000) "></path>
+                        <path d="M100,20 L104,22 L100,24 L100,20 Z" id="Rectangle-204" fill="#C0392B"></path>
+                        <path d="M8,20 L12,22 L8,24 L8,20 Z" id="Rectangle-204" fill="#C0392B" transform="translate(10.000000, 22.000000) scale(-1, 1) translate(-10.000000, -22.000000) "></path>
+                        <path d="M8,2 C8,2 26,8.41944674e-16 56,0 C86,0 104,2 104,2 L104,22 C104,22 86,20 56,20 C26,20 8,22 8,22 L8,2 Z" id="Rectangle-202" fill="#E74C3C"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

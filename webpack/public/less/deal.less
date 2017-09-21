@@ -1,0 +1,161 @@
+@import url(reset.import.less);
+/* @import url(stock-layout.import.less); */
+
+// 标题
+.deal-hd{margin-top: 40px;}
+.deal-hd .mod-tab{font-size: 20px;font-weight: bold;margin-top:-3px;padding-left: 0;margin-bottom: 20px;}
+.deal-hd .rest{position: absolute;top:0;right:0;line-height:37px;color:#999;}
+.deal-hd .rest .icon-time{vertical-align: middle;margin-right: 5px;}
+
+.deal-bd-cont{float: left;width: 920px;position: relative;}
+
+.deal-main{.clearfix;margin-bottom: 40px;}
+.deal-search{float: left;width: 620px;}
+.deal-search .mod-search{position: relative;right: auto;top: auto;width: 560px;z-index: 3;margin-bottom: 20px;}
+.deal-search .mod-search__input{background-color: transparent;margin-left: 7px;line-height:40px;border:#ccc solid 1px;border-radius:0.5em;padding:0 0.8em; width:92%; font-size:1em;}
+.deal-search .mod-search .icon-search{left:auto;right: 2em;position:absolute;text-indent:-10rem;top:1em;overflow:hidden; cursor:pointer;}
+.deal-search .mod-search.searching{border-bottom-right-radius: 0;border-bottom-left-radius: 0;}
+.deal-search .mod-search.searching .search-result{display: block;}
+// 搜索联想
+.deal-search .search-result{display:none;position: absolute;left:-1px;top:38px;width:560px;border-bottom-right-radius: 4px;border-bottom-left-radius: 4px;border:1px solid #ccc;line-height: 30px;background-color: #fff;font-size: 14px;padding: 5px 0;}
+.deal-search .search-result .item{padding-left: 7px;display: block;overflow: hidden;}
+.deal-search .search-result__name{color:#333;width: 407px;float: left;}
+.deal-search .search-result__code{color:#999;float: left;}
+
+// 搜索结果简介
+.search-info{background-color: #f5f5f5;padding:20px;height: 350px;position:relative;}
+
+// 指数
+.stock-number{width: 200px;margin-bottom: 30px;}
+.stock-number__now{font-size: 48px;line-height: 60px;}
+.stock-number.lose .stock-number__now i{display: inline-block;width: 17px;height: 17px;margin-left: 8px;background:url(img/icon-down.png) 0 0 no-repeat;}
+.stock-number__other{font-size: 14px;}
+.stock-number__other .numb1{margin-right: 6px;}
+
+// 订单交易记录
+.stock-record{position:absolute;top:20px;right:60px;width: 340px;height: 80px;background-color: #fff;}
+.stock-record-tit{position:absolute;top:4px;left:4px;font-size: 10px;color:#ccc;}
+.stock-recordlist{text-align: right;}
+.stock-recordlist li{display: inline-block;width: 10px;margin-left:10px;height:80px;position: relative;}
+.stock-recordlist i{position:absolute;left:0;bottom: 0;width: 10px;}
+.stock-recordlist .buy{background-color: @blue;}
+.stock-recordlist .sale{background-color: @orange;}
+.ui-btn{font-size:1.2em;}
+
+.icon-buy1,
+.icon-buy2,
+.icon-buy3,
+.icon-buy4,
+.icon-buy5,
+.icon-sale1,
+.icon-sale2,
+.icon-sale3,
+.icon-sale4,
+.icon-sale5{float: left;margin-top:5px;width: 24px;height: 16px;float: left;margin-right: 5px;}
+.icon-buy1{background-image: url(img/icon-buy1.png)}
+.icon-buy2{background-image: url(img/icon-buy2.png)}
+.icon-buy3{background-image: url(img/icon-buy3.png)}
+.icon-buy4{background-image: url(img/icon-buy4.png)}
+.icon-buy5{background-image: url(img/icon-buy5.png)}
+.icon-sale1{background-image: url(img/icon-sale1.png)}
+.icon-sale2{background-image: url(img/icon-sale2.png)}
+.icon-sale3{background-image: url(img/icon-sale3.png)}
+.icon-sale4{background-image: url(img/icon-sale4.png)}
+.icon-sale5{background-image: url(img/icon-sale5.png)}
+.stock-infolist{line-height: 26px;width:700px;}
+.stock-infolist ul{width: 148px;display:inline-block;vertical-align:top;margin-right: 45px;color:#999;font-size: 14px;margin-bottom: 23px;}
+.stock-waitlist .money{float: right;width:50px;text-align: right;}
+.stock-infolist__cont{color:#333;float: right;}
+// 交易面板
+.deal-panel{width: 300px;height: 490px;float: left;border-radius: 4px;}
+.deal-panel.ui-form{position:relative;
+                    & > .field{margin-bottom:4em}}
+.deal-panel .btn-deal{.ui-btn(100%,40px)}
+.deal-panel {.field{width: 100%;margin-left:0};.deal-panel__cont.ui-form{position:absolute;right:0}}
+.deal-panel .selection{position:relative;width: 280px;}
+.deal-panel__cont{width:450px;height: 300px; overflow-y:scroll;
+                  .number{position:relative;margin-bottom:1em};
+                  .right{background-color: #f5f5f5;width:280px;padding: 20px 5px 0 0; min-height:300px;}
+                  }
+.deal-panel__cont label{color:#333;}
+.deal-panel__cont .field{margin-bottom: 10px;}
+.deal-stock__cont{margin-bottom:10px;border: 1px solid #ccc;border-radius: 4px;.clearfix;}
+.deal-stock__cont .item{height: 60px;display: block;position: relative;}
+.deal-stock__cont .icon-checkbox{width: 14px;height: 14px;border:1px solid #ccc;display: block;background-color: #fff;border-radius: 2px;top:11px;left:10px;position: absolute;}
+.deal-stock__tit{font-size: 16px;color:rgba(51,51,51,0.4);margin-left: 38px;padding-top: 8px;}
+.deal-stock__tips{color:#ccc;margin-left: 38px;}
+.deal-stock__tips .buy{margin-right: 50px;}
+.deal-stock__tips .buy .number{color:@blue;margin-left: 5px;}
+.deal-stock__tips .sale .number{color:@orange;margin-left: 5px;}
+.deal-stock__deal{display:none;border-top:1px solid #ccc;position:relative;height:2em;}
+.deal-stock__deal .buy-number[type=text]{border:none;width: 200px;border-radius: 0;border-bottom-left-radius: 4px;border-right:1px solid #ccc;padding-right: 40px;float: left;}
+.deal-stock__deal .selection{min-width:72px;width: 73px;right:0;border-radius: 0;border: 0;border-bottom-right-radius: 4px;border-left: #ccc solid 1px;position:absolute;}
+.deal-stock__deal .selected{border:none;border-radius: 0;border-bottom-right-radius: 4px;}
+.deal-stock__deal .icon-rate{width: 16px;height: 16px;background: url(img/icon-rate.png) 0 0 no-repeat;position: absolute;top:11px;left: 171px;}
+.deal-stock__deal .selecting:before{content: "";position: absolute;width:1px;height:40px;top:0;right:-1px;background-color: #ccc;}
+.deal-stock__deal .selecting .selectlist{left:-1px;right:-1px;top:40px;}
+.deal-stock__cont.checked{}
+.deal-stock__cont.checked .deal-stock__deal{display: block;}
+.deal-stock__cont.checked .icon-checkbox{width: 16px;height: 16px;background: url(img/icon-checked.png) 0 0 no-repeat;border:none;}
+.deal-panel__action{height: 60px;background-color: #f5f5f5;width:260px;padding:10px 20px 13px; position:absolute;bottom:38px;}
+.ui-form .deal-stock__deal .tips {z-index:auto;left:-140px;
+                                  &:before{border-width:6px 0px 6px 8px; border-color:transparent transparent transparent #E74D3C; right:-7px;left:100%;}
+
+}
+
+// 其他栏目
+.deal-part{margin-bottom: 40px;}
+.deal-part-hd{overflow: hidden;line-height: 22px;margin-bottom: 5px;}
+.deal-part__tit{font-size: 16px;float: left;margin-right: 10px;}
+.deal-part__tit:before{content: "";float: left;width: 2px;height: 16px;background-color: #333;margin-right: 7px;margin-top: 2px;}
+.deal-part__all{color:#3498DB;vertical-align: -1px;}
+
+// 表格
+.mod-table th{font-size: 12px;color:#999;}
+.mod-table .disabled,
+.mod-table .weak{color:#ccc;}
+.mod-table .item1{padding-left:10px;}
+.mod-table .ui-btn{.ui-btn(60px,30px);}
+// 持仓
+.position-table .item1{width: 190px;}
+.position-table .item2{width: 73px;text-align: right;}
+.position-table .item3{width: 90px;text-align: right;}
+.position-table .item4{width: 98px;text-align: right;}
+.position-table .item5{width: 84px;text-align: right;}
+.position-table .item6{width: 111px;text-align: right;}
+.position-table .item7{width: 133px;text-align: right;}
+.position-table .item8{padding-right: 10px;text-align: right;}
+// 今日
+.today-table .item1{width: 84px;}
+.today-table .item2{width: 71px;}
+.today-table .item3{width: 95px;}
+.today-table .item4{width: 190px;}
+.today-table .item5{width: 83px;text-align: right;}
+.today-table .item6{width: 100px;text-align: right;}
+.today-table .item7{width: 100px;text-align: right;}
+.today-table .item8{width: 100px;text-align: right;}
+.today-table .item9{padding-right: 10px;text-align: right;}
+// 条件单
+.filter-table .item1{width: 84px;}
+.filter-table .item2{width: 71px;}
+.filter-table .item3{width: 95px;}
+.filter-table .item4{width: 81px;}
+.filter-table .item5{width: 184px;}
+.filter-table .item6{width: 64px;}
+.filter-table .item7{width: 64px;text-align: right;}
+.filter-table .item8{width: 51px;text-align: right;}
+.filter-table .item9{width: 64px;text-align: right;}
+.filter-table .item10{width: 64px;text-align: right;}
+.filter-table .item11{padding-right: 10px;text-align: right;}
+
+// 側栏
+.aside{float: right;width: 200px;}
+.aside-hd{padding-bottom: 10px;}
+.mine-stock-list li{height: 50px;}
+.mine-stock-list .deep{background-color: #f5f5f5;}
+.mine-stock-list a{display:block;padding: 7px 10px 0;}
+.mine-stock-list__stock{float: left;}
+.mine-stock-list__info{float: right;}
+.mine-stock-list .name,
+.mine-stock-list .price{font-size: 14px;}
+.mine-stock-list .code{color:#999;}

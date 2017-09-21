@@ -1,0 +1,14 @@
+#开发源代码分支
+ /patch/for_ac_0606
+
+#表结构变更
+ALTER TABLE `oms_v3`.`base_deal` ADD `fund_name` VARCHAR(500)  NOT NULL  DEFAULT ''  AFTER `currency`;
+ALTER TABLE `oms_v3`.`base_deal` ADD `bs_type` VARCHAR(50)  NOT NULL  DEFAULT ''  AFTER `fund_name`;
+
+#独立配置文件更新
+
+
+#crontab定时任务
+
+
+#版本发布初始化操作

@@ -1,0 +1,63 @@
+//out:../css/agree.min.css,compress:true
+@import url(reset.import.less);
+
+@borderLighter: 1px solid rgba(34,36,38,0.1);
+
+@gray: #e8e8e8;
+body {margin-bottom: 0px;}
+html.weixin .global-download-footer{display:none!important;}
+
+//策略信息样式
+i {font-style: normal;}
+
+.icon-info{width:60px;height:60px;float:right;background-image:url('./img/product/bg-iconinfo-sprite.png');background-size:60px;background-repeat:no-repeat;margin:-5px 0;
+    .pos(@x,@y){background-position:@x @y;}
+    &.icon-blue{.pos(0,-60px);}
+}
+
+.info-dot{width:1em;height:1em;border-radius:50%;text-align:center;display:inline-block;
+    background-image:url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg" version="1.1" stroke="#fff"><circle cx="2" cy=".75" r=".25" stroke-width=".5"/><line x1="2" y1="2" x2="2" y2="4"/></svg>');
+    background-size:60%;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:#D8D8D8;
+    vertical-align:-.1em;
+    margin-left:.35em;
+}
+
+section{background:@white;margin-bottom:15px;border-bottom:@border;padding:20px 16px;line-height:1;
+    +section{border-top:@border;}
+    .hd{padding-bottom:20px;border-bottom:@borderLighter;
+        &.invest-tactics{line-height:18px;}
+        .big-number{font-size:32px;display:inline-block;margin:8px 0 -4px;}
+    }
+    .bd{padding-top:16px;
+        .time-title{font-size:10px;color:@textColorLight;margin-bottom:7px;}
+    }
+
+    hr{margin:16px 0;border:0;border-top:@border;height:0;}
+
+    .money_unit{
+        &.cn{.reset();color:inherit;}
+        &.hk{.reset();color:inherit;}
+    }
+}
+
+title,b.title{font-weight:400;display:inline-block;color:@textColorLight;}
+
+dl{
+    dt {color: @headerNavLink;margin-bottom:14px;}
+    dd {color: @black;line-height:18px;
+        p{margin:0;}
+    }
+}
+
+ul {
+	li{height:32px;line-height:32px;clear:both;
+		&:after{content:'';display:block;height:0;}
+	 	> span{float:right;display:inline-block;text-align:right;}
+	}
+}
+
+//投组协议内容样式
+.wrap_ful {width: 100%; height: auto; overflow-x: hidden;}

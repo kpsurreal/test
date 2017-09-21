@@ -1,0 +1,31 @@
+[
+    {
+        "id": "xx",
+        "product_id": "xx",
+        "created_at": "xx:unixTimeStamp",
+        "updated_at": "xx:unixTimeStamp",
+        "entrust":{
+            "model": "",
+            "type": "",
+            "price": "",
+            "amount": ""
+        },
+        "stock":{
+            "code": "",
+            "name": ""
+        },
+        "deal":[
+            {
+                "amount": "",
+                "price": ""
+            }
+        ],
+        "last_handler":{
+            "user_id":"",
+            "nickname":""
+        },
+        "status":"",
+        "order_status":"",
+        "cancel_status":""
+    }
+]

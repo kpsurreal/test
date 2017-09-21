@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="246px" height="246px" viewBox="0 0 246 246" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.1 (15681) - http://www.bohemiancoding.com/sketch -->
+    <title>修改 copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M213.506543,152.407881 C201.369318,191.457662 164.949165,219.812682 121.906341,219.812682 C111.781495,219.812682 102.023094,218.243746 92.8609957,215.335731 C82.2175102,199.521905 75.9999995,180.441851 76,159.89954 C76,159.89954 104.637784,147.977031 121.244087,148.000033 C140.019939,148.02604 148.3548,159.993145 174.253949,159.899541 C188.901438,159.846602 201.705923,155.773666 213.506543,152.407881 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="修改-copy" sketch:type="MSArtboardGroup">
+            <circle id="Mask" stroke="#FFDE00" stroke-width="3.99609756" fill="#D65645" sketch:type="MSShapeGroup" cx="122.906341" cy="123.906341" r="95.9063415"></circle>
+            <path d="M212.679401,154.521217 C199.360681,191.485715 163.979085,217.913171 122.425027,217.913171 C80.692216,217.913171 45.1850861,191.25786 32,154.043602 C41.8531071,150.56267 56.772431,145.985774 67.0675564,146.000034 C85.8434086,146.026041 94.17827,157.993146 120.077419,157.899542 C145.110622,157.809067 164.760723,145.976857 183.216555,146.000034 C194.880256,146.014681 206.174624,151.008365 212.679401,154.521217 L212.679401,154.521217 Z" id="Mask" stroke="#FFDE00" stroke-width="3.99609756" fill="#FFDE00" sketch:type="MSShapeGroup"></path>
+            <circle id="Oval-18" stroke="#FFDE00" stroke-width="1.99804878" opacity="0.8" sketch:type="MSShapeGroup" cx="123" cy="124" r="104"></circle>
+            <circle id="Oval-18" stroke="#FFDE00" stroke-width="1.99804878" opacity="0.4" sketch:type="MSShapeGroup" cx="123" cy="124" r="112"></circle>
+            <circle id="Oval-18" stroke="#FFDE00" stroke-width="1.99804878" opacity="0.1" sketch:type="MSShapeGroup" cx="123" cy="123" r="120"></circle>
+            <mask id="mask-2" sketch:name="Mask" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" opacity="0.2" fill="#FFDE00" sketch:type="MSShapeGroup" xlink:href="#path-1"></use>
+        </g>
+    </g>
+</svg>

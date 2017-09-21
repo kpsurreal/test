@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <script src="lib/jquery.js"></script>
 <style>
     .onoffswitch {
         position: relative;
@@ -35,20 +36,21 @@
         height: 20px;
         padding: 0;
         line-height: 20px;
-        font-size: 12px;
+        font-size: 8px;
         color: white;
         font-weight: bold;
         box-sizing: border-box;
+        font-family: Arial, Baskerville, monospace;
     }
     .onoffswitch-inner:before {
-        content: "ON";
-        padding-left: 6px;
+        content: "起用";
+        padding-left: 4px;
         background-color: #4FACDB;
         color: #FFFFFF;
     }
     .onoffswitch-inner:after {
-        content: "OFF";
-        padding-right: 6px;
+        content: "禁用";
+        padding-right: 4px;
         background-color: #F50E4C;
         color: #FAFAFA;
         text-align: right;
@@ -77,12 +79,18 @@
 </head>
 <body>
 <div class="onoffswitch">
-    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" >
-    <label class="onoffswitch-label" for="myonoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox"  >
+    <label class="onoffswitch-label" >
          <span class="onoffswitch-inner"></span>
          <span class="onoffswitch-switch"></span>
     </label>
+
 </div>
 </body>
+<script>
+    $('.onoffswitch-label').click(function () {
+        $(this).prev('input')[0].checked = !$(this).prev('input')[0].checked;
+    })
+</script>
 
 </html>

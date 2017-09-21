@@ -1,0 +1,72 @@
+<div class="container-title">
+  <h2 class="page-title"></h2>
+  <div class="container-title-right" id="productHeader">
+    <vue-product-display :user_info="userInfo" :group_info="groupInfo" :balance_info="balanceInfo" :org_info="org_info"></vue-product-display>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<div class="container-content">
+  <div class="container-content-menu">
+    <div id="productMenu">
+      <vue-product-menu :permission="permission" :active="active" :disabled="disabled" :goto="goto"></vue-product-menu>
+    </div>
+  </div>
+  <div class="container-content-grid" id="user_setting">
+    <div class="content-head">
+      <h3>已添加人员（<span>{{ usersInfo.length }}</span>）</h3>
+      <a class="ui-btn btn_cancel" style="display: none;">取消</a>
+      <a class="ui-btn btn_add" style="display: none;">添加人员</a>
+    </div>
+    <table id="accountList">
+      <thead>
+        <tr>
+          <th class="left30" style="width: 120px;">姓名</th>
+          <th class="left20" style="width: 120px;display: none;">角色</th>
+          <th class="left20">权限</th>
+          <th class="right40"></th>
+        </tr>
+      </thead>
+      <tbody v-for="user in usersInfo">
+        <!-- <template> -->
+          <tr>
+            <td class="left30">{{user.user_info.nick_name}}</td>
+            <td class="left20" style="display: none;">{{user.user_info.role}}</td>
+            <td class="left20">{{displayPermissionsStr(user.permissions)}}</td>
+            <td class="right40">
+              <a v-on:click="doEdit(user.user_info.user_id)">修改权限</a>
+              <a v-on:click="doDelete(user.user_info.user_id)">删除</a>
+            </td>
+          </tr>
+          <!-- <template> -->
+            <tr v-if="user.user_info.user_id == editPermission.user_id" class="editTr">
+              <td colspan="1" style="padding-left: 30px;">
+                <!-- <select class="select_roles" style="float: right;"></select> -->
+              </td>
+              <td class="editTd">
+                <!-- <template> -->
+                  <label v-for="permission in editPermission.permissions" class="checkbox-single"><input type="checkbox" checked="checked" :checked="hasPermission(user.permissions, permission.value)" :value="permission.value" />{{permission.name}}</label>
+                <!-- </template> -->
+              </td>
+              <td class="right40">
+                <a v-on:click="saveEdit(user.user_info.user_id)" class="btn-save">保存</a>
+                <a v-on:click="cancelEdit" class="btn-cancel">取消</a>
+              </td>
+            </tr>
+          <!-- </template> -->
+        <!-- </template> -->
+      </tbody>
+    </table>
+    <div class="riskGridPagination"></div>
+  </div>
+  <div class="container-content-add">
+    <div class="search-item">
+      <select class="add_user_name"></select>
+    </div>
+    <div class="search-item">
+      <select class="add_user_roles"></select>
+    </div>
+    <a class="ui-btn ui-add doAddUser">添加人员</a>
+    <a class="ui-btn ui-cancel doCancel">取消</a>
+    <span class="tip">没有找到需要人员？点击此处<a class="doCreateUser">创建</a></span>
+  </div>
+</div>

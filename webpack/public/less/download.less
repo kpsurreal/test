@@ -1,0 +1,118 @@
+// out: ../css/download.min.css, sourcemap: false, compress: true
+@import url(reset.import.less);
+
+.fontPingFang() {
+    font-family: "PingFang SC";
+}
+.opacity(@opaci){opacity:@opaci / 100;filter:Alpha(opacity=@opaci);}
+body {margin-bottom: 260px;}
+.download-wrap{
+    .section{
+        h1{font-size:40px;}
+        p{font-size:24px;line-height:2;}
+        &.head{.bgSingle('./img/download/bg.head.jpg');background-size:cover;position:relative;height:576px;color:@white;
+            .container{height:100%;overflow:hidden;box-sizing:border-box;text-align: center;}
+            h1{margin:202px 0 36px;font-size: 48px;line-height: 67px;.fontPingFang;font-weight: lighter;}
+            p{font-size:20px;line-height: 28px;.fontPingFang;font-weight: lighter;}
+            .btns{margin-top:87px;}
+            img.hand{width:370px;height:auto;position:absolute;bottom:0;right:120px;}
+            p.links{margin-top:20px;line-height: 20px;color:#fff;font-size:12px;font-weight: normal;.opacity(80);
+                &>a{text-decoration:underline;margin-right:.75em;color:#fff;font-size:12px;.opacity(80);
+                    &:hover{color:#fff;.opacity(100);}
+                }
+            }
+        }
+        &.superman{background-color: @bgGrayLight;text-align:center;height:411px;color:@black;
+            img.supermen{height:326px;width:auto;margin:60px auto;display:block;}
+            h1{padding-top:60px;margin-bottom:20px;.fontPingFang;font-weight: 200;font-size: 48px;line-height: 67px;}
+            p{.fontPingFang;.opacity(80);font-size: 16px;line-height: 22px;color:#6f7c82;}
+            ul{margin: 60px 270px 0 270px;display:inline-block;}
+            li{
+                float:left;width: 80px;padding:0 40px;
+                &>p{margin-top:20px;}
+                img.shape{width: 80px;}
+            }
+        }
+        &.platform{background-size:cover;height:680px;color:@black;
+            img.platform-phone{height:590px;width:auto;float:left;margin-left:120px;margin-right:60px;margin-top:60px;}
+            img.platforms{height:44px;width:auto;margin-top:117px;}
+            h1{margin-top:37px;margin-bottom:10px;width: 1030px;font-size: 24px;line-height: 33px;.fontPingFang;font-weight: normal;color: #292e31;}
+            p{line-height: 22px;font-size: 16px;.fontPingFang;font-weight: normal;color: #6f7c82;.opacity(80);}
+        }
+        &.foot{background-size:cover;height:400px;color:@black;text-align:center;
+            h1{padding-top:60px;margin-bottom:40px;font-size: 48px;line-height: 67px;.fontPingFang;font-weight: 200;}
+            p{.fontPingFang;.opacity(80);font-size: 20px;line-height: 28px;color:#6f7c82;}
+            .btns{margin-top:77px;}
+        }
+    }
+    .btns{
+        .ui-btn{.ui-btn(160px,48px);margin-right:1em;}
+        .qr-btn{
+            &:extend(.ui-btn, .ui-btn.yellow);
+            .ui-btn(48px,48px);
+            margin-right: 1em;
+        }
+        .qr-btn:hover{
+            &:extend(.ui-btn.yellow:hover);
+        }
+
+        img{height:auto;vertical-align:middle;margin-right:1em;
+            &.apple{width:16px;}
+            &.android{width:17px;}
+            &.qr-small{margin:0 auto;width:24px;}
+        }
+        p.links{margin-top:20px;line-height: 20px;color:#999;font-size:12px;font-weight: normal;
+            a{text-decoration:underline;margin-right:.75em;color:#999;
+                &:hover{color:@blue;}
+            }
+        }
+    }
+}
+
+.win-download-wrap{
+    min-width:490px;
+}
+
+.win-download-box {
+    header {padding-bottom: 40px;}
+    .btnbox {
+        float:left;
+        .btn-appstore,
+        .btn-appstore-review,
+        .btn-android{
+            margin-bottom: 20px;
+            a {
+                display:          block;
+                background-image: url(img/download/btn_ios.png);
+                background-size:  cover;
+                width:            160px;
+                height:           50px;
+            }
+        }
+        .btn-appstore-review a {background-image: url(img/download/btn_ios_review.png);}
+        .btn-android a {background-image: url(img/download/btn_android.png);}
+        .links{width:250px;}
+    }
+    .qrimg{float:left;width:50%;box-sizing:border-box;text-align:center;
+        +.qrimg{border-left:@border;}
+        img{width:160px;height:160px;}
+        h1{font-size:@textSizeLargeX;margin-bottom:.3em;}
+        p{font-size:@textSizeBase;line-height:1.5;margin:0;color:@textColorLight;}
+    }
+    .box-line {
+        height: 20px;
+    }
+    .links {
+        a {
+            margin-right: 10px;
+            text-decoration: underline;
+        }
+    }
+}
+
+@media (min-resolution:2dppx),(-webkit-min-device-pixel-ratio:2){
+	.contract .content a.download-btn {background-image: url(img/download/btn@2x.png);}
+	.win-download-box .btnbox .btn-appstore a{background-image: url(img/download/btn_ios@2x.png);}
+	.win-download-box .btnbox .btn-appstore-review a{background-image: url(img/download/btn_ios_review@2x.png);}
+	.win-download-box .btnbox .btn-android a{background-image: url(img/download/btn_android@2x.png);}
+}

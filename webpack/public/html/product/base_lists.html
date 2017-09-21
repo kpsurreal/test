@@ -1,0 +1,207 @@
+<div class="container-title">
+  <h2>账户管理</h2>
+  <div style="clear:both;"></div>
+</div>
+<div class="container-content">
+  <div class="container-search-bar">
+    <div class="search-item">
+      <select id="search_product"></select>
+    </div>
+    <div class="search-item" style="display: none;">
+      <select id="search_account"></select>
+    </div>
+    <a class="btn_search"><i></i>开始搜索</a>
+  </div>
+  <div class="container-content-grid" id="accountList">
+    <!-- 专户版 -->
+    <template v-if="orgInfo.theme == 3">
+      <table>
+        <thead>
+          <tr>
+            <th class="left10 multi"></th>
+            <th style="color: #999;" class="left10">账户</th>
+            <th style="color: #999;" class="left20">账户名称</th>
+            <th style="color: #999;" class="left20">账户类型</th>
+            <th style="color: #999;" class="left20">所属券商</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">资产总值</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">资金余额</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">证券市值</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">可分配金额</th>
+            <th class="right40"></th>
+          </tr>
+        </thead>
+        <tbody v-for="account in accountInfo">
+          <tr>
+            <td class="left10" v-on:click="toggleShowChildren(account)">
+              <template v-if="account.child.length > 0">
+                <div v-if="account.showChildren" class="icon-hide"></div>
+                <div v-if="!account.showChildren" class="icon-show"></div>
+              </template>
+            </td>
+            <td class="left10">{{account.account_id}}</td>
+            <td class="left20">{{account.name}}</td>
+            <td class="left20">{{getsecuritiesType(account.securities_id)}}</td>
+            <td class="left20">{{account.securities_name}}</td>
+            <td class="right20">{{numeralNumber(account.total_amount)}}</td>
+            <td class="right20">{{numeralNumber(account.balance_amount)}}</td>
+            <th class="right20">{{numeralNumber(account.market_value)}}</th>
+            <th class="right20">{{numeralNumber(account.available_amount)}}</th>
+            <td class="right40">
+              <a class="do_split" v-if="checkShowSplit() && checkSplit(account.able_split)" v-on:click="doSplit(account.id)">新建策略</a>
+              <a class="do_split disabled" v-if="checkShowSplit() && !checkSplit(account.able_split)">新建策略</a>
+              <span class="dot-tip exclamation" v-if="checkShowSplit() && !checkSplit(account.able_split)">
+                <div>
+                  <em>i</em>
+                  <span class="str">
+                    <span class="msg">
+                      <span>该账户不支持新建策略，若需要请联系我们</span>
+                    </span>
+                  </span>
+                </div>
+              </span>
+              <a class="do_changePassword" v-if="checkShow(account.com_pw)" v-on:click="doChangePassword(account.id, account.tx_pw)" style="margin-left: 10px;display: inline-block;">修改密码</a>
+              <span v-if="checkShow(account.com_pw) && false" v-on:click="showProgress(account.id, 2)" class="dot-tip exclamation">
+                <div>
+                  <em>i</em>
+                  <span class="str">
+                    <span class="msg">
+                      <span>点击查看修改密码进度</span>
+                    </span>
+                  </span>
+                </div>
+              </span>
+            </td>
+          </tr>
+          <tr v-if="account.showChildren && (account.child.length > 0)">
+            <td colspan="10" style="padding-top: 0;padding-bottom: 0;">
+              <table class="sub-table">
+                <thead>
+                  <tr v-if="orgInfo.theme != 3">
+                    <th style="color: #999;" class="left70">策略名称</th>
+                    <th style="color: #999;" class="right20">初始资金</th>
+                    <th style="color: #999;" class="right20">资产总值</th>
+                    <th style="color: #999;" class="right20">资金余额</th>
+                    <th style="color: #999;" class="right20" style="width: 190px;">证券市值</th>
+                    <th style="color: #999;" class="right20" style="width: 190px;">冻结资金</th>
+                    <th class="right40"></th>
+                  </tr>
+                  <tr v-if="orgInfo.theme == 3">
+                    <th style="color: #999;" class="left70">策略名称</th>
+                    <th style="color: #999;" class="right20">用户账号</th>
+                    <th style="color: #999;" class="right20">杠杆比例</th>
+                    <th style="color: #999;" class="right20">资产总值</th>
+                    <th style="color: #999;" class="right20">保证金金额</th>
+                    <th style="color: #999;" class="right20">借款金额</th>
+                    <th style="color: #999;" class="right20">资金余额</th>
+                    <th style="color: #999;" class="right20" style="width: 190px;">证券市值</th>
+                    <th class="right40"></th>
+                  </tr>
+                </thead>
+                <tbody v-if="orgInfo.theme != 3" v-for="child in account.child">
+                    <tr>
+                      <td class="left70">{{child.name}}</td>
+                      <td class="right20">{{child.is_forever == 1 ? numeralNumber(child.collect_capital) : '--'}}</td>
+                      <td class="right20">{{numeralNumber(child.total_amount)}}</td>
+                      <td class="right20">{{numeralNumber(child.balance_amount)}}</td>
+                      <td class="right20">{{numeralNumber(child.market_value)}}</td>
+                      <td class="right20">{{numeralNumber(child.tmp_frozen_amount)}}</td>
+                      <td class="right40">
+                        <a v-on:click="doConfig(child.product_id)">设置</a>
+                      </td>
+                    </tr>
+                </tbody>
+                <tbody v-if="orgInfo.theme == 3" v-for="child in account.child">
+                    <tr>
+                      <td class="left70">{{child.name}}</td>
+                      <td class="right20">{{child.operator_uid}}</td>
+                      <td class="right20">{{child.lever_ratio}}</td>
+                      <td class="right20">{{numeralNumber(child.total_amount)}}</td>
+                      <td class="right20">{{numeralNumber(child.assure_capital)}}</td>
+                      <td class="right20">{{numeralNumber(child.loan_capital)}}</td>
+                      <td class="right20">{{numeralNumber(child.balance_amount)}}</td>
+                      <td class="right20">{{numeralNumber(child.market_value)}}</td>
+                      <td class="right40">
+                        <a v-if="child.permission.base_setting" v-on:click="doConfig(child.product_id, 'base_setting')">基础信息</a>
+                        <a v-if="child.permission.user_setting" v-on:click="doConfig(child.product_id, 'user_setting')">人员分配</a>
+                        <a v-if="child.permission.risk_setting" v-on:click="doConfig(child.product_id, 'risk_setting')">风控设置</a>
+                        <a v-if="child.permission.fee_setting" v-on:click="doConfig(child.product_id, 'fee_setting')">费用设置</a>
+                        <a v-if="child.permission.cash_setting" v-on:click="doConfig(child.product_id, 'cash_setting')">资金调整</a>
+                        <a v-if="child.permission.position_setting && false" v-on:click="doConfig(child.product_id, 'position_setting')">证券调整</a>
+                      </td>
+                    </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+    <!-- 机构版 -->
+    <template v-if="orgInfo.theme != 3">
+      <table>
+        <thead>
+          <tr v-if="orgInfo.theme != 3">
+            <th style="color: #999;" class="left70">策略名称</th>
+            <th style="color: #999;" class="right20">初始资金</th>
+            <th style="color: #999;" class="right20">资产总值</th>
+            <th style="color: #999;" class="right20">资金余额</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">证券市值</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">冻结资金</th>
+            <!-- <th class="right20" style="width: 190px;">更新时间</th> -->
+            <th class="right40"></th>
+          </tr>
+          <tr v-if="orgInfo.theme == 3">
+            <th style="color: #999;" class="left70">策略名称</th>
+            <th style="color: #999;" class="right20">用户账号</th>
+            <th style="color: #999;" class="right20">杠杆比例</th>
+            <th style="color: #999;" class="right20">资产总值</th>
+            <th style="color: #999;" class="right20">保证金金额</th>
+            <th style="color: #999;" class="right20">借款金额</th>
+            <th style="color: #999;" class="right20">资金余额</th>
+            <th style="color: #999;" class="right20" style="width: 190px;">证券市值</th>
+            <!-- <th style="color: #999;" class="right20" style="width: 190px;">冻结资金</th> -->
+            <!-- <th class="right20" style="width: 190px;">更新时间</th> -->
+            <th class="right40"></th>
+          </tr>
+        </thead>
+        <tbody v-if="orgInfo.theme != 3" v-for="account in accountInfo">
+          <tr v-for="child in account.child">
+            <td class="left70">{{child.name}}</td>
+            <td class="right20">{{child.is_forever == 1 ? numeralNumber(child.collect_capital) : '--'}}</td>
+            <td class="right20">{{numeralNumber(child.total_amount)}}</td>
+            <td class="right20">{{numeralNumber(child.balance_amount)}}</td>
+            <td class="right20">{{numeralNumber(child.market_value)}}</td>
+            <td class="right20">{{numeralNumber(child.tmp_frozen_amount)}}</td>
+            <!-- <td class="right20">{{child.updated_at}}</td> -->
+            <td class="right40">
+              <a v-on:click="doConfig(child.product_id)">设置</a>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-if="orgInfo.theme == 3" v-for="account in accountInfo">
+          <tr v-for="child in account.child">
+            <td class="left70">{{child.name}}</td>
+            <td class="right20">{{child.operator_uid}}</td>
+            <td class="right20">{{numeralNumber(child.lever_ratio)}}</td>
+            <td class="right20">{{numeralNumber(child.total_amount)}}</td>
+            <td class="right20">{{numeralNumber(child.assure_capital)}}</td>
+            <td class="right20">{{numeralNumber(child.loan_capital)}}</td>
+            <td class="right20">{{numeralNumber(child.balance_amount)}}</td>
+            <td class="right20">{{numeralNumber(child.market_value)}}</td>
+            <!-- <td class="right20">{{child.tmp_frozen_amount}}</td> -->
+            <!-- <td class="right20">{{child.updated_at}}</td> -->
+            <td class="right40">
+              <a v-if="child.permission.base_setting" v-on:click="doConfig(child.product_id, 'base_setting')">基础信息</a>
+              <a v-if="child.permission.user_setting" v-on:click="doConfig(child.product_id, 'user_setting')">人员分配</a>
+              <a v-if="child.permission.risk_setting" v-on:click="doConfig(child.product_id, 'risk_setting')">风控设置</a>
+              <a v-if="child.permission.fee_setting" v-on:click="doConfig(child.product_id, 'fee_setting')">费用设置</a>
+              <a v-if="child.permission.cash_setting" v-on:click="doConfig(child.product_id, 'cash_setting')">资金调整</a>
+              <a v-if="child.permission.base_setting && false" v-on:click="doConfig(child.product_id, 'base_setting')">证券调整</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+    <div class="riskGridPagination"></div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<!-- 报表页面 -->
+<div class="report_form" id="report_form">
+  <div class="report-form-type">
+    <ul class="report-form-type__content">
+      <li class="report-form-type__content__describle" v-if="checkDisplay('product')" @click="reportChange('product')" :class="[{active: active == 'product'}]">基金报表</li>
+      <li class="report-form-type__content__describle" v-if="checkDisplay('position')" @click="reportChange('position')" :class="[{active: active == 'position'}]">持仓报表</li>
+    </ul>
+  </div>
+  <!-- 产品报表 -->
+  <report-table-head v-if="'product' == active" :product_sign_arr="product_sign_arr" :product_current_sign="product_current_sign" v-on:select_sign_id="product_select_sign = $event" :product_sign_pole_all="product_sign_pole_all" :product_info_arr="product_info_arr" :control_show="control_show" :product_list="product_list" :pos_total="pos_total" :current_procut_id="current_procut_id"  :current_data="current_data" v-on:change_selected="current_procut_id = ($event)" v-on:change_begin_data="current_data = ($event)" v-on:change_total="pos_total = ($event)" v-on:cal_expect="cal_expect = $event" v-on:control_show_hide="control_show = $event" v-on:change_end_product="end_product = $event">
+  </report-table-head>
+  <draggable v-if="'product' == active" :product_select_sign="product_select_sign" :list="product_info_arr" :control_show="control_show" :options="dragOptions" @start="onStart" :move="onMove" @end="onEnd">
+    <report-content :product_select_sign="product_select_sign" :product_sign_pole_all="product_sign_pole_all" :product_current_sign="product_current_sign" :current_product_remark="current_product_remark" :moving="moving" :cal_expect="cal_expect" :control_show="control_show" :current_data="current_data" v-for="product_info in product_info_arr" :product_info_arr="product_info_arr" :product_info="product_info" :current_procut_id="current_procut_id" v-if="current_procut_id.length > 0" :pos_total="pos_total">
+    </report-content>
+  </draggable>
+
+  <!-- 持仓报表 -->
+  <report-position-form v-if="'position' == active" :is_starter="is_starter" :position_data_show_sort="position_data_show_sort" :change_position_users="change_position_users" :position_real_name="position_form_data.users" :position_form_data="position_form_data" :position_stock_data="position_form_data.reports"
+    @change_manager_selected="changeManagerSelected = $event" @select_position_id="modelPositionId = $event" @change_total_selected="position_rate = $event" @change_concern_stock="is_only_star = $event">
+  </report-position-form>
+</div>

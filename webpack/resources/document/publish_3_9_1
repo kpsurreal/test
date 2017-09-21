@@ -1,0 +1,4 @@
+ALTER TABLE `gmf_bms`.`product_base` ADD `auto_review` TINYINT  NOT NULL  DEFAULT '0';
+如果账户仅需要获取指令审核 {
+    UPDATE `gmf_bms`.`product_base` SET need_ins=1,{需自动审核则 auto_review=1} WHERE id=***;
+}

@@ -1,0 +1,515 @@
+.clearfix:after,
+.clearfix:before {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.al {
+  text-align: left;
+}
+.ar {
+  text-align: right;
+}
+.ac {
+  text-align: center;
+}
+.cell-left {
+  height: 36px;
+  line-height: 36px;
+  position: relative;
+  font-size: 12px;
+  color: #999999;
+  text-align: left;
+}
+.line {
+  background-image: linear-gradient(to bottom, #E4EAF0, #F5F7F8);
+}
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.bg {
+  position: absolute;
+  top: 2px;
+  left: -32px;
+  background-size: cover;
+  width: 29px;
+  height: 29px;
+}
+.bx {
+  padding: 25px 20px 15px 30px;
+}
+.icon-alert {
+  position: absolute;
+  top: 2px;
+  left: -32px;
+  background-size: cover;
+  width: 29px;
+  height: 29px;
+  background-image: url(../../../images/oms_client/icon-alert.png);
+}
+.icon-normal {
+  position: absolute;
+  top: 2px;
+  left: -32px;
+  background-size: cover;
+  width: 29px;
+  height: 29px;
+  background-image: url(../../../images/oms_client/icon-normal.png);
+}
+#risk {
+  min-width: 1400px;
+  min-height: 772px;
+  background: #f1f3fa;
+}
+#risk > .risk-nav {
+  background-color: #EEF4F9;
+  border-bottom: 1px solid #979797;
+}
+#risk > .risk-nav > .risk-nav_title {
+  height: 48px;
+  line-height: 48px;
+  font-size: 16px;
+  color: #4A4A4A;
+  padding: 0 3px;
+  margin-left: 50px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#risk > .risk-nav > .risk-nav_title:first-child {
+  margin-left: 25px;
+}
+#risk > .risk-nav > .risk-nav_title:hover {
+  color: #2196F3;
+  border-bottom: 4px solid #2196F3;
+}
+#risk > .risk-nav > .risk-nav_title.active {
+  color: #2196F3;
+  border-bottom: 4px solid #2196F3;
+}
+#risk > .risk-monitoring {
+  margin-bottom: 50px;
+  height: 1515px;
+  background-color: #fff;
+}
+#risk > .risk-monitoring > .queryData-title__select_box {
+  padding-left: 25px;
+  padding-top: 20px;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__select {
+  width: 185px;
+  height: 35px;
+  border: 1px solid #EFEFEF;
+  border-radius: 3px;
+  margin-left: 10px;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__corner {
+  margin-right: 35px;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__corner .queryData-title__refresh {
+  display: inline-block;
+  max-height: 33px;
+  margin-right: 10px;
+  padding: 0 12px;
+  border-radius: 2px;
+  background: #ccc;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__corner .queryData-title__output {
+  display: inline-block;
+  max-height: 35px;
+  margin-right: 10px;
+  padding: 0 12px;
+  border-radius: 2px;
+  background: #ccc;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__corner .queryData-title__output i {
+  background-image: url(../../../images/welcome/icon_export.png);
+  margin-right: 12px;
+}
+#risk > .risk-monitoring > .queryData-title__select_box .queryData-title__corner .queryData-title__setdozen {
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 10px;
+  padding: 0 12px;
+  background: #FFDE00;
+  border: 1px solid #ddd;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos {
+  border-top: 1px solid #D7D5D5;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_thead {
+  padding-left: 32px;
+  border-bottom: 1px solid #D7D5D5;
+  display: flex;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_thead div[class^="risk-monitor_td"] {
+  height: 36px;
+  line-height: 36px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row {
+  display: flex;
+  padding-left: 32px;
+  border-bottom: 1px solid #D7D5D5;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row div[class^="risk-monitor_td"] {
+  height: 36px;
+  line-height: 36px;
+  font-size: 12px;
+  vertical-align: middle;
+  color: #333333;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_td_first {
+  position: relative;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_short {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_shadow {
+  position: absolute;
+  top: 32px;
+  left: -10%;
+  width: 80%;
+  padding: 15px 15px;
+  font-size: 12px;
+  line-height: 2;
+  background-color: #fff;
+  z-index: 9;
+  border: 1px solid rgba(119, 151, 178, 0.3);
+  border-radius: 8px;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_shadow:before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -5px;
+  right: 20px;
+  border: 1px solid rgba(119, 151, 178, 0.3);
+  border-left: 0;
+  border-bottom: 0;
+  background-color: #fff;
+  transform: rotate(-45deg);
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk_ellispis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_td_btn .risk-monitor_decrease {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #2196F3;
+  width: 43px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  margin-right: 20px;
+  font-size: 13px;
+  color: #f9fcfe;
+}
+#risk > .risk-monitoring > .riks-monitoring_infos .risk-monitoring_row .risk-monitor_td_btn .risk-monitor_increase {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #FFDE00;
+  width: 43px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  font-size: 13px;
+  color: #2a2400;
+}
+#risk > .risk-independent {
+  margin-bottom: 50px;
+  height: 1515px;
+  background-color: #fff;
+}
+#risk > .risk-independent .risk-independent_added_preview {
+  padding-right: 92px;
+  height: 98px;
+  overflow: hidden;
+  position: relative;
+}
+#risk > .risk-independent .risk-independent_added_preview.slidedown {
+  height: auto;
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_title {
+  font-size: 22px;
+  color: #000;
+  font-weight: bold;
+  margin: -1px 15px 0 0;
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_detail {
+  margin: 4px 30px 6px 0;
+  border: 1px solid #bebebe;
+  border-radius: 2px;
+  height: 26px;
+  min-width: 77px;
+  line-height: 16px;
+  padding: 4px 10px;
+  font-size: 14px;
+  color: #333;
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_detail_more {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: #2196F3;
+  width: 92px;
+  line-height: 32px;
+  font-size: 14px;
+  text-align: center;
+  height: 32px;
+  cursor: pointer;
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_detail_more:hover {
+  color: #000;
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_detail_more .icon-arrow-bottom {
+  display: inline-block;
+  line-height: 32px;
+  height: 32px;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 12px;
+  transform: scaleX(1.5);
+}
+#risk > .risk-independent .risk-independent_added_preview .risk-independent_added_detail_more .icon-arrow-bottom.moreslidedown {
+  transform: rotateZ(180deg) scaleX(1.5);
+}
+#risk > .risk-independent .risk-independent_added {
+  margin-bottom: 10px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products input[type="checkbox"] {
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_title {
+  box-sizing: border-box;
+  padding: 7px 0 15px 7px;
+  font-size: 20px;
+  height: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  color: #000;
+  position: relative;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_title:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 3px;
+  height: 18px;
+  background-color: #FFDE00;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_controll {
+  width: 325px;
+  margin-bottom: 20px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_controll .risk-independent_setdel {
+  display: inline-block;
+  color: #fff;
+  background-color: #f44336;
+  border-radius: 4px;
+  margin-right: 20px;
+  height: 32px;
+  font-size: 14px;
+  line-height: 32px;
+  padding: 0 30px;
+  cursor: pointer;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_controll .risk-independent_setdel:hover {
+  color: #000;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_controll .risk-independent_select {
+  display: inline-block;
+  width: 182px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_controll .risk-independent_select .ms-choice {
+  height: 32px;
+  line-height: 32px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details {
+  border: 1px solid #CCC;
+  max-height: 289px;
+  overflow-y: scroll;
+  font-size: 12px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details .tr {
+  display: flex;
+  height: 36px;
+  line-height: 36px;
+  padding-left: 5px;
+  background-color: #fff;
+  border-bottom: 1px solid #EAEAEA;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_title {
+  color: #BDBDBD;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_title .details_product {
+  width: 185px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_title .details_risktype {
+  width: 205px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list {
+  position: relative;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_name {
+  width: 185px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_person {
+  width: 205px;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_btn a {
+  display: inline-block;
+  padding: 0 12px;
+  cursor: pointer;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_btn a:hover {
+  color: #000;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_btn .details_list_btn_modify {
+  color: #2196F3;
+}
+#risk > .risk-independent .risk-independent_added > .risk-independent_added_products > .risk-independent_added_details > .risk-independent_added_details_list .details_list_btn .details_list_btn_del {
+  color: #F44336;
+}
+#risk > .risk-combined > #risk-combined_added {
+  margin-bottom: 50px;
+  height: 1515px;
+  background-color: #fff;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_top .risk-combined_title {
+  box-sizing: border-box;
+  font-size: 22px;
+  padding: 5px 0 20px 10px;
+  font-weight: 700;
+  color: #000;
+  position: relative;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_top .risk-combined_title:before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 3px;
+  height: 22px;
+  background-color: #ffde00;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_top .risk-combined_del {
+  color: #fff;
+  background-color: #f44336;
+  border-radius: 4px;
+  margin-right: 20px;
+  height: 32px;
+  font-size: 14px;
+  line-height: 32px;
+  padding: 0 30px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_top .risk-combined_del:hover {
+  color: #000;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table {
+  border: 1px solid #ccc;
+  max-height: 289px;
+  overflow-y: scroll;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table input[type=checkbox] {
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_row {
+  color: #bdbdbd;
+  display: flex;
+  font-size: 12px;
+  height: 36px;
+  line-height: 36px;
+  padding-left: 5px;
+  border-bottom: 1px solid #eaeaea;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_row .risk-combined_added_product {
+  width: 185px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_row .risk-combined_added_risktype {
+  width: 205px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils {
+  font-size: 12px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row {
+  position: relative;
+  display: flex;
+  height: 36px;
+  line-height: 36px;
+  padding-left: 5px;
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_row_1 {
+  width: 185px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_row_2 {
+  width: 205px;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_btn a {
+  display: inline-block;
+  padding: 0 12px;
+  cursor: pointer;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_btn a:hover {
+  color: #000;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_btn .details_list_btn_modify {
+  color: #2196f3;
+}
+#risk > .risk-combined > #risk-combined_added .risk-combined_added_table > .risk-combined_added_detatils .risk-combined_added_row .risk-combined_added_btn .details_list_btn_del {
+  color: #f44336;
+}
+.refresh_rotate {
+  animation: rotatez 1s linear infinite;
+}
+@keyframes rotatez {
+  from {
+    transform: rotateZ(0);
+  }
+  to {
+    transform: rotateZ(180deg);
+  }
+}
