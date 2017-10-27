@@ -1,12 +1,15 @@
 var path = require('path');
 var webpack = require('webpack');
 var glob = require('glob');
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+let extractCSS = new ExtractTextPlugin('../css/[name].css');
+let extractLESS = new ExtractTextPlugin('../css/[name].css');
 function getEntry(globPath) {
   var entries = {},
     basename, tmp, pathname;
   glob.sync(globPath).forEach(function(entry) {
-    if (!/common/.test(entry)) {
+    console.log(entry);
+    // if (!/common/.test(entry)) {
       basename = path.basename(entry, path.extname(entry));   // 文件名
       tmp = entry.split('/').splice(3);
       // console.log(tmp);
@@ -16,13 +19,12 @@ function getEntry(globPath) {
         pathname = tmp.splice(0, tmp.length - 1).join('/') + '/' + basename; 
       }
       entries[pathname] = entry;
-    }
+    // }
   });
   return entries;
 }
 
-var entries = getEntry('./src/js/**/*.js');
-// console.log(entries);
+var entries = getEntry('./src/{js,less}/**/*.{js,less}');
 // process.exit();
 
 module.exports = {
@@ -46,17 +48,38 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: 'less-loader'
+        loader: extractLESS.extract({
+          use:[ 'raw-loader', 'less-loader' ],
+          fallback: "style-loader"
+        }),
       },
       {
+        test: /\.css$/,
+        loader:  extractCSS.extract("style-loader","css-loader")
+      },
+      {
+        // test: /\.js$/,
+        // use: 'babel-loader',
+        // exclude: /node_modules/
         test: /\.js$/,
-        use: 'babel-loader',
+        use: [{
+          loader: 'babel-loader',
+          options: {
+             presets: ['es2015']
+          }
+        }],
         exclude: /node_modules/
       }
     ]
   },
+  plugins: [
+      extractCSS,
+      extractLESS
+  ],
   devtool: 'inline-source-map', // 开发环境使用这个 map 
 }
+
+
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.devtool = '#source-map' // 生产环境使用这个 map
